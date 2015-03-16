@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="kTabBarTitle0">页A</string>
+    <string name="kTabBarTitle1">页B</string>
+    <string name="kTabBarTitle2">页C</string>
+    <string name="kTabBarTitle3">页D</string>
+    <string name="kTabBarTitle4">页E</string>
+    <string name="title_activity_asset">图片</string>
+    <string name="title_activity_search">搜索</string>
+    <string name="title_activity_category_flow">分类</string>
+    <string name="title_activity_feed_flow">频道</string>
+    <string name="title_activity_auth">登录</string>
+    <string name="title_activity_license">全景服务条款</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="title_activity_user_info_edit">编辑用户信息</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fragment_square">广场</string>
+    <string name="fragment_talent">达人</string>
+    <string name="fragment_circle">推荐</string>
+    <string name="title_activity_temp">TempActivity</string>
+    <string name="title_activity_mwtupload_pic">上传</string>
+    <string name="title_activity_mwtcomment">评论</string>
+    <string name="title_activity_mwtfollower">粉丝</string>
+    <string name="title_activity_mwtfollowings">关注</string>
+    <string name="title_activity_mwtdual">美图</string>
+    <string name="title_activity_local_album">本地相册</string>
+    <string name="title_activity_image_editor">图片编辑</string>
+    <string name="title_activity_mwtother_user">用户信息</string>
+    <string name="title_activity_mwtimage_flow">MWTImageFlowActivity</string>
+    <string name="title_activity_user_square">圈子</string>
+
+    <!-- 图片浏览 -->
+    <string name="only_choose_num">超出可选图片张数</string>
+    <string name="invalidSD">sdcard无效或没有插入！</string>
+    <string name="photo">选择相册</string>
+    <string name="album">相册</string>
+    <string name="preview">预览</string>
+    <string name="unfinished">完成</string>
+    <string name="camera_cancel">取消</string>
+    <string name="no_photo">相册没有图片</string>
+    <string name="title_activity_user_info">UserInfoActivity</string>
+    <string name="title_activity_mwtbase2">MWTBase2Activity</string>
+    <string name="title_activity_mwtsub_found">MWTSubFoundActivity</string>
+    <string name="title_activity_mwtavatar">MWTAvatarActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+
+</resources>

@@ -1,0 +1,103 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.quanjing.dutu">
+
+    <application
+        android:name=".app.MDTApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_dutu"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".app.ui.MDTMainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.asset.MWTAssetActivity"
+            android:label="@string/title_activity_asset"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.search.MWTSearchActivity"
+            android:label="@string/title_activity_search"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.category.MWTCategoryFlowActivity"
+            android:label="@string/title_activity_category_flow"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.feed.MWTFeedFlowActivity"
+            android:label="@string/title_activity_feed_flow"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".app.ui.MDTTravelCategoryActivity"
+            android:label="旅游"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <data android:scheme="tencent100371282"/>
+
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity"
+            android:label="@string/title_activity_auth"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.user.MWTSMSAuthRequestActivity"
+            android:screenOrientation="portrait"
+            android:label="获取验证码">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.user.MWTSMSAuthVerifyActivity"
+            android:screenOrientation="portrait"
+            android:label="填写验证码">
+        </activity>
+        <activity
+            android:name="com.quanjing.weitu.app.ui.user.MWTPasswordLoginActivity"
+            android:screenOrientation="portrait"
+            android:label="用户名密码登录">
+        </activity>
+
+        <meta-data android:value="541f8740fd98c518be061868" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="QuanjingAPK" android:name="UMENG_CHANNEL"/>
+
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+</manifest>

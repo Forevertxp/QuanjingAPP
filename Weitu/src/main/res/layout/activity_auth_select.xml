@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ImageView"
+        android:visibility="visible"
+        android:scaleType="centerCrop"
+        android:src="@drawable/auth_bg_2"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="32dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@drawable/bg_round_semi_transparent_gray">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="进一步操作前请验证身份"
+                android:textColor="@color/DarkTextColor"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/SMSRegisterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BlueGlassButton"
+                android:layout_marginBottom="10dp"
+                android:text="通过手机注册"/>
+
+            <Button
+                android:id="@+id/SMSLoginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BlueGlassButton"
+                android:layout_marginBottom="10dp"
+                android:text="使用手机登录"/>
+
+            <Button
+                android:id="@+id/PasswordLoginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BlueGlassButton"
+                android:layout_marginBottom="10dp"
+                android:text="用户名密码登录"/>
+
+            <Button
+                android:id="@+id/CancelButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/BlueGlassButton"
+                android:layout_marginBottom="5dp"
+                android:text="取消"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

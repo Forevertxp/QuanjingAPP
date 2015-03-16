@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="165dp"
+    android:layout_height="40dp"
+    android:background="@drawable/comment_bg"
+    android:gravity="center_vertical" >
+
+    <TextView
+        android:id="@+id/popu_praise"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/select_comment_left"
+        android:drawableLeft="@drawable/circle_praise"
+        android:gravity="center_vertical"
+        android:padding="4dp"
+        android:text="赞"
+        android:textColor="#ffffffff"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        android:background="#ff000000" />
+
+    <TextView
+        android:id="@+id/popu_comment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/select_comment_right"
+        android:drawableLeft="@drawable/circle_comment"
+        android:gravity="center_vertical"
+        android:padding="4dp"
+        android:text="评论"
+        android:textColor="#ffffffff"
+        android:textSize="16sp" />
+</LinearLayout>

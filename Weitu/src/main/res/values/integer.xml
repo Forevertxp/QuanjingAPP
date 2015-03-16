@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="feed_flow_column_count">2</integer>
+    <item type="id" name="TabBarItemIndexTag"/>
+</resources>

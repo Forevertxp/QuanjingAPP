@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="LOCAL" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$APPLICATION_HOME_DIR$/gradle/gradle-2.2.1" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/CircularImageView" />
+            <option value="$PROJECT_DIR$/Dutu" />
+            <option value="$PROJECT_DIR$/IconicDroid" />
+            <option value="$PROJECT_DIR$/PullToRefresh" />
+            <option value="$PROJECT_DIR$/Quanjing" />
+            <option value="$PROJECT_DIR$/SVProgressHUD" />
+            <option value="$PROJECT_DIR$/StaggeredGridView" />
+            <option value="$PROJECT_DIR$/Weitu" />
+            <option value="$PROJECT_DIR$/imagechooser" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
+

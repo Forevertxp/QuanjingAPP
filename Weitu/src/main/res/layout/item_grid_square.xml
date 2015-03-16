@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dip">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/captionText"
+        android:layout_centerHorizontal="true">
+
+        <com.etsy.android.grid.util.DynamicHeightImageView
+            android:id="@+id/item_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            tools:ignore="ContentDescription">
+
+        </com.etsy.android.grid.util.DynamicHeightImageView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_pic"
+            android:background="@drawable/ic_square_item"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/captionText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_pic" />
+
+            <ImageView
+                android:id="@+id/likeImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/captionText"
+                android:layout_margin="5dp"
+                android:layout_toLeftOf="@+id/likeUserNum"
+                android:background="@drawable/ic_talent_faverate" />
+
+            <TextView
+                android:id="@+id/likeUserNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/captionText"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="2dp"
+                android:textColor="#b3b3b3" />
+
+            <com.quanjing.weitu.app.ui.community.square.XCRoundImageView
+                android:id="@+id/img_head"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/likeUserNum"/>
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/likeUserNum"
+                android:layout_toRightOf="@+id/img_head"
+                android:textColor="#0090ff"
+                android:textSize="13sp"></TextView>
+
+            <TextView
+                android:id="@+id/profileText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nameText"
+                android:layout_toRightOf="@+id/img_head"
+                android:textColor="#afafaf"
+                android:textSize="12sp"></TextView>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/likeUserNum"
+                android:layout_centerVertical="true"
+                android:background="@drawable/ic_btn"
+                android:text="关注"
+                android:textColor="@color/common_white"
+                android:textSize="13sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

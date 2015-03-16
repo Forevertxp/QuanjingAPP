@@ -1,0 +1,9 @@
+apply plugin: 'android-library'
+apply from: '../android-common.gradle'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.tonicartos:stickygridheaders:1.0.1'
+    compile project(':StaggeredGridView')
+    compile 'com.android.support:support-v13:21.0.2'
+}

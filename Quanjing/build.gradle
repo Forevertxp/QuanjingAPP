@@ -1,0 +1,18 @@
+apply plugin: 'android'
+apply from: '../android-common.gradle'
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.1.+'
+    compile project(':Weitu')
+    compile files('src/main/libs/droidinspectorserver.jar')
+    compile 'com.android.support:support-v13:21.0.2'
+}
+
+android {
+    signingConfigs {
+    }
+    buildTypes {
+        release {
+        }
+    }
+}

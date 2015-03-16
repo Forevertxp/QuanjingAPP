@@ -1,0 +1,35 @@
+<resources>
+
+    <style name="AppTheme" parent="@_AppTheme" />
+
+    <style name="_AppTheme" parent="android:Theme.Holo.Light">
+        <item name="android:actionMenuTextAppearance">@style/MenuTextStyle</item>
+        <item name="android:textColorHighlight">#990090ff</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+    </style>
+
+    <style name="LoginTheme">
+        <item name="android:windowBackground">@drawable/ic_index</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/ActionBarBackgroundColor</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitleTextStyle</item>
+        <item name="android:itemTextAppearance">@style/ActionBarItemTextAppearance</item>
+    </style>
+
+    <style name="ActionBarTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/ActionBarForegroundColor</item>
+    </style>
+
+    <style name="ActionBarItemTextAppearance" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">@color/ActionBarForegroundColor</item>
+    </style>
+
+    <style name="MenuTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>

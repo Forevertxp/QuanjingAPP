@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.quanjing.weitu.app.ui.user.LocalAlbumActivity">
+    <item
+        android:id="@+id/plain_item"
+        android:icon="@drawable/ic_launcher"
+        android:title="普通菜单项" />
+</menu>

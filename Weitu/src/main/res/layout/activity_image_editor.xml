@@ -1,0 +1,25 @@
+<com.quanjing.weitu.app.common.MWTOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quanjing.weitu.app.ui.user.ImageEditorActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/editImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editImage"
+            android:background="@drawable/ic_temp" />
+
+    </RelativeLayout>
+</com.quanjing.weitu.app.common.MWTOverScrollView>
+
+

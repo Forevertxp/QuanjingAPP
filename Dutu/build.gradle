@@ -1,0 +1,8 @@
+apply plugin: 'android'
+apply from: '../android-common.gradle'
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile project(':Weitu')
+    compile 'com.android.support:support-v13:21.0.2'
+}

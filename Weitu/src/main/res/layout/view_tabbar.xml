@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_gravity="center_horizontal|bottom"
+    android:background="@color/common_white"
+    android:paddingTop="2dp">
+
+    <com.quanjing.weitu.app.ui.common.MWTTabItemView
+        android:id="@+id/TabBarItemView0"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/IconTextView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:textAppearance="@style/TabBarIconTextAppearance"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TabBarTitleTextAppearance"
+            android:text="@string/kTabBarTitle0"
+            android:layout_gravity="center_horizontal"/>
+    </com.quanjing.weitu.app.ui.common.MWTTabItemView>
+
+    <com.quanjing.weitu.app.ui.common.MWTTabItemView
+        android:id="@+id/TabBarItemView1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/IconTextView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:textAppearance="@style/TabBarIconTextAppearance"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TabBarTitleTextAppearance"
+            android:text="@string/kTabBarTitle1"
+            android:layout_gravity="center_horizontal"/>
+    </com.quanjing.weitu.app.ui.common.MWTTabItemView>
+
+    <com.quanjing.weitu.app.ui.common.MWTTabItemView
+        android:id="@+id/TabBarItemView2"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/IconTextView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:textAppearance="@style/TabBarIconTextAppearance"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TabBarTitleTextAppearance"
+            android:text="@string/kTabBarTitle2"
+            android:layout_gravity="center_horizontal"/>
+
+    </com.quanjing.weitu.app.ui.common.MWTTabItemView>
+
+    <com.quanjing.weitu.app.ui.common.MWTTabItemView
+        android:id="@+id/TabBarItemView3"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/IconTextView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:textAppearance="@style/TabBarIconTextAppearance"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TabBarTitleTextAppearance"
+            android:text="@string/kTabBarTitle3"
+            android:layout_gravity="center_horizontal"/>
+
+    </com.quanjing.weitu.app.ui.common.MWTTabItemView>
+
+    <com.quanjing.weitu.app.ui.common.MWTTabItemView
+        android:id="@+id/TabBarItemView4"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0">
+
+        <TextView
+            android:id="@+id/IconTextView"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:textAppearance="@style/TabBarIconTextAppearance"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/TitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TabBarTitleTextAppearance"
+            android:text="@string/kTabBarTitle4"
+            android:layout_gravity="center_horizontal"/>
+
+    </com.quanjing.weitu.app.ui.common.MWTTabItemView>
+
+</LinearLayout>

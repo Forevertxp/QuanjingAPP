@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dip">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/common_white"
+        android:padding="6dp">
+
+        <TextView
+            android:id="@+id/ItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"></TextView>
+
+        <com.quanjing.weitu.app.ui.community.square.XCRoundImageView
+            android:id="@+id/ItemImage"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_below="@+id/ItemText"
+            android:layout_centerHorizontal="true"
+            tools:ignore="ContentDescription"></com.quanjing.weitu.app.ui.community.square.XCRoundImageView>
+
+        <TextView
+            android:id="@+id/followState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ItemImage"
+            android:layout_centerHorizontal="true"
+            android:padding="10dp"
+            android:text=""
+            android:textColor="@color/common_blue"></TextView>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

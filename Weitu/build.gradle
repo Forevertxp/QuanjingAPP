@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+apply from: '../android-common.gradle'
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
+    compile 'com.squareup.picasso:picasso:2.3.3'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.loopj.android:android-async-http:1.4.5'
+    compile 'com.tonicartos:stickygridheaders:1.0.1'
+    compile project(':PullToRefresh')
+    compile project(':IconicDroid')
+    compile project(':SVProgressHUD')
+    compile project(':CircularImageView')
+    compile project(':ImageChooser')
+    compile project(':StaggeredGridView')
+    compile 'com.google.guava:guava:18.0'
+    compile files('src/main/libs/ShareSDK-Core-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-Email-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-ShortMessage-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-SinaWeibo-2.3.12.jar')
+    compile files('src/main/libs/mframework.jar')
+    compile files('src/main/libs/ShareSDK-Wechat-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-Wechat-Core-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-Wechat-Favorite-2.3.12.jar')
+    compile files('src/main/libs/ShareSDK-Wechat-Moments-2.3.12.jar')
+    compile files('src/main/libs/umeng-analytics-v5.2.4.jar')
+    compile 'com.android.support:support-v13:21.0.2'
+    compile files('src/main/libs/universal-image-loader-1.9.3.jar')
+    compile files('src/main/libs/ShareSDK-QQ-2.3.8.jar')
+}

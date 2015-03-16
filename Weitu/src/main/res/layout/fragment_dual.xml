@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quanjing.weitu.app.ui.common.MWTDualFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/GeneralBackgroundColor"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ButtonsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_weight="0.0">
+
+            <Button
+                android:id="@+id/ButtonA"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_weight="1.0"
+                android:text="ButtonA"
+                android:layout_marginRight="10dp"
+                style="@style/LightTextButton"/>
+
+            <Button
+                android:id="@+id/ButtonB"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_weight="1.0"
+                android:text="ButtonB"
+                style="@style/LightTextButton"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/FragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0">
+
+        </FrameLayout>
+    </LinearLayout>
+
+</FrameLayout>

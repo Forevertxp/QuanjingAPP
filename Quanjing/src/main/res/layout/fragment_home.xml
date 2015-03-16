@@ -1,0 +1,256 @@
+<!--<com.quanjing.quanjing.app.ui.KeyboardLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:id="@+id/keyboardLayout"--><!--android:layout_width="fill_parent"--><!--android:layout_height="fill_parent">-->
+
+
+<com.quanjing.weitu.app.common.MWTOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/common_white"
+    android:scrollbars="none"
+    tools:context="com.quanjing.quanjing.app.ui.MQJHomeFragment">
+
+
+    <RelativeLayout
+        android:id="@+id/homeRL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/index_labels"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/common_white"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/ic_index_logo" />
+
+            <RelativeLayout
+                android:id="@+id/SearchAreaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/ic_search_bg"
+                android:orientation="horizontal">
+
+                <AutoCompleteTextView
+                    android:id="@+id/EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:background="@null"
+                    android:hint="请输入搜索关键词"
+                    android:imeOptions="actionSearch"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true" />
+
+                <ImageView
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_toLeftOf="@+id/SearchButton"
+                    android:background="#D4D4D4" />
+
+                <ImageButton
+                    android:id="@+id/SearchButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/ic_index_search" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btn_travel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="旅游" />
+
+                <TextView
+                    android:id="@+id/btn_car"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="汽车" />
+
+                <TextView
+                    android:id="@+id/btn_jiaju"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="家居" />
+
+                <TextView
+                    android:id="@+id/btn_food"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="美食" />
+
+                <TextView
+                    android:id="@+id/btn_fashion"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="时尚" />
+
+                <TextView
+                    android:id="@+id/btn_baike"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:text="壁纸" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/index_labels"
+            android:background="#EDEDED"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/index_news"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/linearlayout"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text="每日一图"
+                    android:textSize="18sp" />
+
+                <ListView
+                    android:id="@+id/index_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"></ListView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/index_pic"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/index_news"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linearlayout"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:text="今日推荐"
+                    android:textSize="18sp" />
+
+                <com.etsy.android.grid.util.DynamicHeightImageView
+                    android:id="@+id/index_everypic"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/daily_caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:padding="5dp"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/labelLL"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/index_pic"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linearlayout"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="热门标签"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#DEDEDE" />
+
+                <TableLayout
+                    android:id="@+id/tableLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:minHeight="125dp"
+                    android:stretchColumns="0,1">
+
+                </TableLayout>
+
+                <TextView
+                    android:id="@+id/more_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="5dp"
+                    android:text="再来一批>>"
+                    android:textColor="@color/common_blue"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</com.quanjing.weitu.app.common.MWTOverScrollView><!--</com.quanjing.quanjing.app.ui.KeyboardLayout>-->

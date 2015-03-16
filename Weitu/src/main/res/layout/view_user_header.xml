@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/GeneralBackgroundColor"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/AvatarImageView"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginStart="14dp"
+                android:layout_marginTop="12dp"
+                android:src="@drawable/logo_douban" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/NicknameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textAppearance="@style/HugeGrayTextButtonTextAppearance" />
+
+                <TextView
+                    android:id="@+id/SignatureTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="编辑个人信息"
+                    android:textAppearance="@style/MediumGrayTextButtonTextAppearance"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/ActionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="left|center_vertical"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:padding="0dp"
+                    android:text="编辑个人信息"
+                    android:textAppearance="@style/MediumGrayTextButtonTextAppearance" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            style="@style/horizontal_line_1px"
+            android:background="@color/BlackTextColor" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/localButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="37\n本机相册" />
+
+            <View
+                style="@style/vertical_line_1px"
+                android:background="@color/BlackTextColor" />
+
+            <Button
+                android:id="@+id/uploadedButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="37\n上传" />
+
+            <View
+                style="@style/vertical_line_1px"
+                android:background="@color/BlackTextColor" />
+
+            <Button
+                android:id="@+id/CollectedButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="37\n收藏"
+                android:visibility="gone" />
+
+            <View
+                style="@style/vertical_line_1px"
+                android:background="@color/BlackTextColor"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/LikedButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="13\n喜欢"
+                android:visibility="gone" />
+
+            <View
+                style="@style/vertical_line_1px"
+                android:background="@color/BlackTextColor"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/DownloadedButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="10\n下载" />
+
+            <View
+                style="@style/vertical_line_1px"
+                android:background="@color/BlackTextColor" />
+
+            <Button
+                android:id="@+id/SharedButton"
+                style="@style/BlueColorTextButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:text="1\n分享" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

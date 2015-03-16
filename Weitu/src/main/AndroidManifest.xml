@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.quanjing.weitu" >
+
+    <library />
+
+    <application>
+        <activity
+            android:name=".app.ui.asset.MWTAssetActivity"
+            android:label="@string/title_activity_asset"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.search.MWTSearchActivity"
+            android:label="@string/title_activity_search"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.category.MWTCategoryFlowActivity"
+            android:label="@string/title_activity_category_flow"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.feed.MWTFeedFlowActivity"
+            android:label="@string/title_activity_feed_flow"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <data android:scheme="tencent100371282" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.wxapi.WXEntryActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".app.ui.user.MWTAuthSelectActivity"
+            android:label="@string/title_activity_auth"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.user.MWTSMSAuthRequestActivity"
+            android:label="获取验证码"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.user.MWTSMSAuthVerifyActivity"
+            android:label="填写验证码"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.user.MWTPasswordLoginActivity"
+            android:label="用户名密码登录"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.user.MWTLicenseActivity"
+            android:label="@string/title_activity_license"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.quanjing.weitu.app.ui.user.MWTSMSAuthRequestActivity" />
+        </activity>
+        <activity
+            android:name=".app.ui.settings.MWTSettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.user.MWTUserInfoEditActivity"
+            android:label="@string/title_activity_user_info_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.found.MWTContentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.found.ShowWebImageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".app.ui.found.TempActivity"
+            android:label="全景故事" />
+        <activity
+            android:name=".app.ui.user.MWTUploadPicActivity"
+            android:label=""
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
+            android:name=".app.ui.photo.AlbumActivity"
+            android:label="" >
+        </activity>
+        <activity
+            android:name=".app.ui.photo.GalleryActivity"
+            android:label="预览" >
+        </activity>
+        <activity
+            android:name=".app.ui.photo.ImageFileActivity"
+            android:label="相册" >
+        </activity>
+        <activity
+            android:name=".app.ui.photo.ShowAllPhotoActivity"
+            android:label="" >
+        </activity>
+        <activity
+            android:name=".app.ui.asset.MWTCommentActivity"
+            android:label="@string/title_activity_mwtcomment" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTFollowerActivity"
+            android:label="@string/title_activity_mwtfollower" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTFollowingsActivity"
+            android:label="@string/title_activity_mwtfollowings" >
+        </activity>
+        <activity
+            android:name=".app.ui.beauty.MWTDualActivity"
+            android:label="@string/title_activity_mwtdual" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTUserInfoActivity"
+            android:label="@string/title_activity_user_info" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.LocalAlbumActivity"
+            android:label="@string/title_activity_local_album" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTImageFlowActivity"
+            android:label="@string/title_activity_mwtimage_flow" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.ImageEditorActivity"
+            android:label="@string/title_activity_image_editor" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTOtherUserActivity"
+            android:label="@string/title_activity_mwtother_user" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.UserSquareActivity"
+            android:label="@string/title_activity_user_square" >
+        </activity>
+        <activity
+            android:name=".app.ui.common.MWTBase2Activity"
+            android:label="@string/title_activity_mwtbase2" >
+        </activity>
+        <activity
+            android:name=".app.ui.found.MWTSubFoundActivity"
+            android:label="@string/title_activity_mwtsub_found" >
+        </activity>
+        <activity
+            android:name=".app.ui.user.MWTAvatarActivity"
+            android:label="@string/title_activity_mwtavatar" >
+        </activity>
+        <activity
+            android:name=".app.ui.TestActivity"
+            android:label="@string/title_activity_test" >
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.quanjing.weitu.app.common.MWTOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quanjing.weitu.app.ui.user.MWTUserMeFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.handmark.pulltorefresh.library.PullToRefreshStaggeredGridView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/GridView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/GeneralBackgroundColor"
+            android:visibility="gone"
+            app:column_count="@integer/feed_flow_column_count"
+            app:item_margin="8dp"
+            app:ptrMode="both" />
+
+        <FrameLayout
+            android:id="@+id/headerFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"></FrameLayout>
+
+        <com.quanjing.weitu.app.ui.beauty.NoScrollGridView
+            android:id="@+id/locaImageGrid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/headerFrame"
+            android:background="@color/GeneralBackgroundColor"
+            android:horizontalSpacing="10dp"
+            android:numColumns="4"
+            android:verticalSpacing="10dp"></com.quanjing.weitu.app.ui.beauty.NoScrollGridView>
+
+    </RelativeLayout>
+</com.quanjing.weitu.app.common.MWTOverScrollView>
+

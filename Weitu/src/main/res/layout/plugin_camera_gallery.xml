@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/albumback">
+
+    <RelativeLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/plugin_camera_bottom_bar">
+
+        <Button
+            android:id="@+id/send_button"
+            android:layout_width="90dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/plugin_camera_ok_btn_state"
+            android:text="@string/finish" />
+
+    </RelativeLayout>
+
+    <com.quanjing.weitu.app.ui.photo.ViewPagerFixed
+        android:id="@+id/gallery01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottom_layout"
+        android:layout_centerHorizontal="true"
+        android:background="@color/plugin_camera_black"
+        android:unselectedAlpha="1"></com.quanjing.weitu.app.ui.photo.ViewPagerFixed>
+
+</RelativeLayout>
+  

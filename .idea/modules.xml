@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/CircularImageView/CircularImageView.iml" filepath="$PROJECT_DIR$/CircularImageView/CircularImageView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Dutu/Dutu.iml" filepath="$PROJECT_DIR$/Dutu/Dutu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IconicDroid/IconicDroid.iml" filepath="$PROJECT_DIR$/IconicDroid/IconicDroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/imagechooser/ImageChooser.iml" filepath="$PROJECT_DIR$/imagechooser/ImageChooser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PullToRefresh/PullToRefresh.iml" filepath="$PROJECT_DIR$/PullToRefresh/PullToRefresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Quanjing/Quanjing.iml" filepath="$PROJECT_DIR$/Quanjing/Quanjing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SVProgressHUD/SVProgressHUD.iml" filepath="$PROJECT_DIR$/SVProgressHUD/SVProgressHUD.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StaggeredGridView/StaggeredGridView.iml" filepath="$PROJECT_DIR$/StaggeredGridView/StaggeredGridView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Weitu/Weitu.iml" filepath="$PROJECT_DIR$/Weitu/Weitu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/全景Android App源码20141020.iml" filepath="$PROJECT_DIR$/全景Android App源码20141020.iml" />
+    </modules>
+  </component>
+</project>
+

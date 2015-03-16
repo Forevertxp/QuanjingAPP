@@ -1,0 +1,170 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.quanjing.weitu.app.ui.user.MWTUserInfoEditActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#EEEEEE"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/SectionAreaStyle"
+            android:layout_marginTop="28dp">
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+
+                <Button
+                    android:id="@+id/AvatarButton"
+                    style="@style/ManualSectionItemButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="头像" />
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/AvatarImageView"
+                    android:layout_width="76dp"
+                    android:layout_height="76dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/logo_douban" />
+            </RelativeLayout>
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            style="@style/SectionAreaStyle"
+            android:layout_marginTop="28dp">
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/NicknameButton"
+                    style="@style/ManualSectionItemButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="昵称" />
+
+                <TextView
+                    android:id="@+id/NicknameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:text="全景用户"
+                    android:textColor="@color/LightTextColor"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/SignatureButton"
+                    style="@style/ManualSectionItemButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="签名档" />
+
+                <TextView
+                    android:id="@+id/SignatureTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="100dp"
+                    android:layout_marginRight="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="这里是签名档"
+                    android:textColor="@color/LightTextColor"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/SectionAreaStyle"
+            android:layout_marginTop="28dp">
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/NicknameButton"
+                    style="@style/ManualSectionItemButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="手机号码" />
+
+                <TextView
+                    android:id="@+id/CellphoneTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="12dp"
+                    android:text="未知的手机号码"
+                    android:textColor="@color/LightTextColor"
+                    android:textSize="20sp" />
+
+            </RelativeLayout>
+
+            <View
+                style="@style/horizontal_line_1px"
+                android:background="@color/DarkDividerLineColor" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/user_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="保 存"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.quanjing.quanjing.app">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <application
+        android:name=".ui.MQJApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_quanjing"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.IndexActivity"
+            android:label="@string/app_name"
+            android:theme="@style/LoginTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.MQJMainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"></activity>
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="541f8719fd98c5b3d7005162" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="QuanjingAPK" />
+
+        <activity
+            android:name=".ui.DailyPicActivity"
+            android:label="@string/title_activity_daily_pic"></activity>
+    </application>
+
+</manifest>

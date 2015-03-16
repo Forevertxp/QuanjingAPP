@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/GeneralBackgroundColor"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="8dp">
+
+    <com.etsy.android.grid.util.DynamicHeightImageView
+        android:id="@+id/ImageView"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/ClearImageViewColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/DownloadButton"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1.0"
+            android:background="@drawable/btn_white"
+            android:text="下载"
+            android:textColor="#0090ff"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/CollectButton"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1.0"
+            android:background="@drawable/btn_white"
+            android:text="收藏"
+            android:textColor="#0090ff"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/ShareButton"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_weight="1.0"
+            android:background="@drawable/btn_white"
+            android:text="分享"
+            android:textColor="#0090ff"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/SerialTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="这里是图片编号"></TextView>
+
+        <TextView
+            android:id="@+id/CaptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="这里是标签"></TextView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/likenum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/likeImage"
+            android:text="尚未被喜欢" />
+
+        <GridView
+            android:id="@+id/like"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></GridView>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/more_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/likeImage"
+        android:text="目前没有任何评论" />
+
+    <ListView
+        android:id="@+id/commentList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/LightDividerLineColor" />
+
+</LinearLayout>

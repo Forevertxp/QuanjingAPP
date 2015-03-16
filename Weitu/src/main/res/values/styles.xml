@@ -1,0 +1,134 @@
+<resources>
+
+    <style name="HugeGrayTextButtonTextAppearance">
+        <item name="android:textSize">23sp</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="MediumGrayTextButtonTextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="SmallGrayTextButtonTextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="kOnePixelDividerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
+    <style name="LightTextButton" parent="android:Widget">
+        <item name="android:textColor">@drawable/btn_text_light</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="OrangeButton" parent="LightTextButton">
+        <item name="android:background">@drawable/btn_orange</item>
+    </style>
+
+    <style name="BlueButton" parent="LightTextButton">
+        <item name="android:background">@drawable/btn_blue</item>
+    </style>
+
+    <style name="BlueColorTextButton" parent="android:Widget">
+        <item name="android:textColor">@color/WTBlueColor</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="BlueGlassButton" parent="android:Widget">
+        <item name="android:textColor">@drawable/btn_text_white</item>
+        <item name="android:background">@drawable/btn_bg_glassblue</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TabBarTitleTextAppearance">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/TabBarForegroundColor</item>
+    </style>
+
+    <style name="TabBarIconTextAppearance">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/TabBarForegroundColor</item>
+    </style>
+
+    <style name="TabBarIconTextAppearanceSelected" parent="TabBarIconTextAppearance">
+        <item name="android:textColor">@color/WTBlueColor</item>
+    </style>
+
+    <style name="TabBarTitleTextAppearanceSelected" parent="TabBarTitleTextAppearance">
+        <item name="android:textColor">@color/WTBlueColor</item>
+    </style>
+
+    <style name="vertical_line_1px">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="horizontal_line_1px">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+    </style>
+
+    <style name="ManualSectionHeaderTextViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:layout_marginTop">28dp</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="ManualSectionItemButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:background">@drawable/btn_pressed_gray</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:textColor">@color/DarkTextColor</item>
+    </style>
+
+    <style name="SectionAreaStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="TabText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/tab_indicator_text</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+    </style>
+
+    <!-- 选择照片 -->
+    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/activity_translate_in</item>
+        <item name="android:windowExitAnimation">@anim/activity_translate_out</item>
+    </style>
+
+    <style name="PopupAnimation1" parent="android:Animation" mce_bogus="1">
+        <item name="android:windowEnterAnimation">@anim/popup_enter</item>
+        <item name="android:windowExitAnimation">@anim/popup_exit</item>
+    </style>
+
+    <style name="cricleBottomAnimation">
+        <item name="android:windowEnterAnimation">@anim/avatar_animation_right_in</item>
+        <item name="android:windowExitAnimation">@anim/avatar_animation_right_out</item>
+    </style>
+
+    <style name="AnimBottom" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>
+    </style>
+
+</resources>
