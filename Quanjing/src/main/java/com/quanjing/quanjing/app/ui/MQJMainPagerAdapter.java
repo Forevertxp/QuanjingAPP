@@ -40,8 +40,8 @@ public class MQJMainPagerAdapter extends FragmentPagerAdapter {
         //_selectedFragment = new MWTDualFragment("最新美图", _latestPicturesFragment, "最热美图", _hottestPicturesFragment);
         //_selectedFragment.setButtonBackgroundDrawable(R.drawable.btn_orange);
 
-        _newCircleFragment = new NewCircleFragment();
         _communityFragemnt = new MWTNewCommunityFragment();
+        _newCircleFragment = new NewCircleFragment();
         _userMeFragment = new MWTUserMeFragment();
     }
 
@@ -57,10 +57,10 @@ public class MQJMainPagerAdapter extends FragmentPagerAdapter {
                 return _homeSearchFragment;
             case 1:
                 return _exploreFragment;
+//            case 2:
+//                return _communityFragemnt;
             case 2:
-                return _communityFragemnt;
-//            case 3:
-//                return _newCircleFragment;
+                return _newCircleFragment;
             case 3:
                 return _userMeFragment;
             default:

@@ -78,10 +78,10 @@
     <style name="ManualSectionHeaderTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:paddingLeft">12dp</item>
-        <item name="android:layout_marginTop">28dp</item>
+        <item name="android:layout_marginTop">20dp</item>
         <item name="android:textColor">@color/DarkTextColor</item>
     </style>
 
@@ -90,7 +90,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:background">@drawable/btn_pressed_gray</item>
         <item name="android:paddingLeft">12dp</item>
         <item name="android:textColor">@color/DarkTextColor</item>

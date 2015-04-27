@@ -21,6 +21,7 @@ public class MWTUserAssetsInfo implements Serializable {
     private transient ArrayList<MWTAsset> _downloadedAssets;
     private transient ArrayList<MWTAsset> _sharedAssets;
     private transient ArrayList<MWTAsset> _collectedAssets;
+    private transient ArrayList<MWTAsset> _commentAssets;
 
     public int getPublicAssetNum() {
         return _publicAssetNum;
@@ -108,6 +109,14 @@ public class MWTUserAssetsInfo implements Serializable {
 
     public void setCollectedAssets(ArrayList<MWTAsset> collectedAssets) {
         _collectedAssets = collectedAssets;
+    }
+
+    public ArrayList<MWTAsset> getCommentAssets() {
+        return _commentAssets;
+    }
+
+    public void setCommentAssets(ArrayList<MWTAsset> commentAssets) {
+        _commentAssets = commentAssets;
     }
 
     public void mergeWithData(MWTUserAssetsInfoData assetsInfoData) {

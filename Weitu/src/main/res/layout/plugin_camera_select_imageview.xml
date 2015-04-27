@@ -17,14 +17,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
-        <ToggleButton
-            android:id="@+id/toggle_button"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/plugin_camera_pic_choose_selector"
-            android:textOff="@null"
-            android:textOn="@null" />
-
         <Button
             android:id="@+id/choosedbt"
             android:layout_width="20dp"
@@ -32,8 +24,15 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/plugin_camera_choosed"
-            android:visibility="gone" />
+            android:layout_marginTop="10dp" />
+
+        <ToggleButton
+            android:id="@+id/toggle_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/plugin_camera_pic_choose_selector"
+            android:textOff="@null"
+            android:textOn="@null" />
     </RelativeLayout>
 </RelativeLayout>

@@ -8,11 +8,6 @@
         <item name="android:actionBarStyle">@style/ActionBarStyle</item>
     </style>
 
-    <style name="LoginTheme">
-        <item name="android:windowBackground">@drawable/ic_index</item>
-        <item name="android:windowNoTitle">true</item>
-    </style>
-
     <style name="ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/ActionBarBackgroundColor</item>
         <item name="android:titleTextStyle">@style/ActionBarTitleTextStyle</item>

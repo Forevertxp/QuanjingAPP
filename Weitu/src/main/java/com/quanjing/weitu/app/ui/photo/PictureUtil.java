@@ -91,13 +91,16 @@ public class PictureUtil {
     }
 
 
-    public static Bitmap compressImage(String filePath) {
+    public static Bitmap compressImage(String filePath, int degree) {
 
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = false;
         Bitmap image = BitmapFactory.decodeFile(filePath, options);
 
-        return zoomImage(image, 640, options.outHeight * 640 / options.outWidth);
+        if (degree == 0 || degree == 180)
+            return zoomImage(image, 640, options.outHeight * 640 / options.outWidth);
+        else
+            return zoomImage(image, options.outWidth * 640 / options.outHeight, 640);
     }
 
     /**

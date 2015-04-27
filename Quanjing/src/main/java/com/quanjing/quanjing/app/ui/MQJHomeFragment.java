@@ -39,11 +39,13 @@ import android.widget.Toast;
 import com.atermenji.android.iconicdroid.IconicFontDrawable;
 import com.atermenji.android.iconicdroid.icon.EntypoIcon;
 import com.etsy.android.grid.util.DynamicHeightImageView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.quanjing.quanjing.app.R;
 import com.quanjing.weitu.app.common.MWTCallback1;
-import com.quanjing.weitu.app.common.MWTOverScrollView;
 import com.quanjing.weitu.app.model.MWTAsset;
 import com.quanjing.weitu.app.model.MWTAssetManager;
+import com.quanjing.weitu.app.model.MWTFeedManager;
 import com.quanjing.weitu.app.model.MWTLabel;
 import com.quanjing.weitu.app.model.MWTRestManager;
 import com.quanjing.weitu.app.protocol.MWTArticleData;
@@ -55,15 +57,17 @@ import com.quanjing.weitu.app.protocol.service.MWTLabelResult;
 import com.quanjing.weitu.app.protocol.service.MWTSearchService;
 import com.quanjing.weitu.app.ui.asset.MWTAssetActivity;
 import com.quanjing.weitu.app.ui.beauty.MWTDualActivity;
+import com.quanjing.weitu.app.ui.common.KeyboardLayout;
 import com.quanjing.weitu.app.ui.found.MWTContentActivity;
 import com.quanjing.weitu.app.ui.found.TempActivity;
+import com.quanjing.weitu.app.ui.index.MWTPicActivity;
 import com.quanjing.weitu.app.ui.search.MWTSearchActivity;
+import com.quanjing.weitu.app.ui.user.MWTOtherUserActivity;
 import com.squareup.picasso.Picasso;
 
 import org.lcsky.SVProgressHUD;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import retrofit.Callback;
@@ -78,12 +82,16 @@ public class MQJHomeFragment extends Fragment {
     private DynamicHeightImageView dynamicHeightImageView;
     private ListView newsListView;
     private DynamicHeightImageView dailyImage;
-    private TextView btn_travel, btn_car, btn_jiaju, btn_food, btn_fashion, btn_baike;
+    private TextView btn_travel, btn_car, btn_jiaju, btn_food, btn_fashion, btn_baike, btn_ingenious, btn_master, btn_art, btn_t;
     private TextView dailyCaption, moreLabel;
     private TableLayout tableLayout;
-    private MWTOverScrollView scrollView;
+    private PullToRefreshScrollView scrollView;
     private KeyboardLayout mainView;
     private LinearLayout newsLL, picLL, labelLL;
+    private ImageView btn_more;
+    private RelativeLayout mreRL;
+
+    private boolean isShowMore = false;
 
     private int width;
     private List<MWTArticleData> articleList = new ArrayList<MWTArticleData>();
@@ -143,7 +151,17 @@ public class MQJHomeFragment extends Fragment {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 //        mainView = (KeyboardLayout) view.findViewById(R.id.keyboardLayout);
-        scrollView = (MWTOverScrollView) view.findViewById(R.id.scrollview);
+        scrollView = (PullToRefreshScrollView) view.findViewById(R.id.scrollview);
+        scrollView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ScrollView>() {
+
+            @Override
+            public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+                //执行刷新函数
+                loadArticleData();
+                loadDailyImage();
+                loadLabelData(PAGE);
+            }
+        });
 
         _searchAreaLayout = (RelativeLayout) view.findViewById(R.id.SearchAreaLayout);
 
@@ -183,7 +201,8 @@ public class MQJHomeFragment extends Fragment {
             }
         });
 
-        view.setOnTouchListener(new View.OnTouchListener() {
+        RelativeLayout homeRL = (RelativeLayout) view.findViewById(R.id.homeRL);
+        homeRL.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -236,6 +255,29 @@ public class MQJHomeFragment extends Fragment {
         btn_food = (TextView) view.findViewById(R.id.btn_food);
         btn_fashion = (TextView) view.findViewById(R.id.btn_fashion);
         btn_baike = (TextView) view.findViewById(R.id.btn_baike);
+        btn_ingenious = (TextView) view.findViewById(R.id.btn_ingenious);
+        btn_master = (TextView) view.findViewById(R.id.btn_master);
+        btn_art = (TextView) view.findViewById(R.id.btn_art);
+        btn_t = (TextView) view.findViewById(R.id.btn_t);
+
+
+        btn_more = (ImageView) view.findViewById(R.id.btn_more);
+        mreRL = (RelativeLayout) view.findViewById(R.id.moreRL);
+        btn_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isShowMore) {
+                    btn_more.setBackgroundResource(R.drawable.ic_index_less);
+                    isShowMore = true;
+                    mreRL.setVisibility(View.VISIBLE);
+                } else {
+                    btn_more.setBackgroundResource(R.drawable.ic_index_more);
+                    isShowMore = false;
+                    mreRL.setVisibility(View.GONE);
+                }
+
+            }
+        });
 
         moreLabel = (TextView) view.findViewById(R.id.more_label);
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
@@ -299,7 +341,38 @@ public class MQJHomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        btn_ingenious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPicActivity(MWTFeedManager.kWTFeedIDIngenious);
+            }
+        });
+        btn_master.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPicActivity(MWTFeedManager.kWTFeedIDMaster);
+            }
+        });
+        btn_art.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPicActivity(MWTFeedManager.kWTFeedIDArt);
+            }
+        });
+        btn_t.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toPicActivity(MWTFeedManager.kWTFeedIDT);
+            }
+        });
         return view;
+    }
+
+    private void toPicActivity(String feed) {
+        Intent intent = new Intent(getActivity(), MWTPicActivity.class);
+        intent.putExtra("feed", feed);
+        startActivity(intent);
+
     }
 
     /**
@@ -404,12 +477,20 @@ public class MQJHomeFragment extends Fragment {
                         .resize(width, (int) (width * 0.6))
                         .into(dailyImage);
                 dailyCaption.setText(result.daily.caption);
+                final int type = result.daily._class;
                 dailyImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getActivity(), MWTAssetActivity.class);
-                        intent.putExtra(MWTAssetActivity.ARG_ASSETID, result.daily.originalid);
-                        getActivity().startActivity(intent);
+                        if (type == 1) {
+                            Intent intent = new Intent(getActivity(), MWTAssetActivity.class);
+                            intent.putExtra(MWTAssetActivity.ARG_ASSETID, result.daily.originalid);
+                            getActivity().startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(getActivity(), MWTOtherUserActivity.class);
+                            intent.putExtra("userID", result.daily.originalid);
+                            getActivity().startActivity(intent);
+                        }
+
                     }
                 });
             }
@@ -428,6 +509,7 @@ public class MQJHomeFragment extends Fragment {
         articleService.fetchHomeActicles(new Callback<MWTArticleResult>() {
             @Override
             public void success(MWTArticleResult result, Response response) {
+                scrollView.onRefreshComplete();
                 articleList = result.article;
                 NewsAdapter newsAdapter = new NewsAdapter(getActivity(), articleList);
                 newsListView.setAdapter(newsAdapter);
@@ -464,14 +546,16 @@ public class MQJHomeFragment extends Fragment {
     private void addRow(final List<MWTLabel> labelList) {
         for (int i = 0; i < labelList.size(); i = i + 2) {
             TableRow tableRow = new TableRow(getActivity());
-            TextView textView1 = new TextView(getActivity());
+            BorderTextView textView1 = new BorderTextView(getActivity());
             textView1.setTag(i);
             textView1.setTextColor(R.color.LabelText);
             textView1.setTextSize(15);
-            TextView textView2 = new TextView(getActivity());
+            textView1.setPadding(30, 16, 10, 16);
+            BorderTextView textView2 = new BorderTextView(getActivity());
             textView2.setTextColor(R.color.LabelText);
             textView2.setTag(i + 1);
             textView2.setTextSize(15);
+            textView2.setPadding(30, 16, 10, 16);
 
             textView1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -496,7 +580,7 @@ public class MQJHomeFragment extends Fragment {
             tableRow.addView(textView2);
             TableLayout.LayoutParams layoutParams = new TableLayout.LayoutParams(
                     ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(20, 10, 20, 10);
+            layoutParams.setMargins(2, 0, 1, 0);
             tableLayout.addView(tableRow, layoutParams);
         }
     }
@@ -508,7 +592,8 @@ public class MQJHomeFragment extends Fragment {
         if (isVisibleToUser) {
             isIndex = true;
             if (scrollView != null) {
-                scrollView.fullScroll(ScrollView.FOCUS_UP);
+                scrollView.setFocusable(true);
+                scrollView.setFocusableInTouchMode(true);
             }
             if (articleList.size() == 0) {
                 loadArticleData();

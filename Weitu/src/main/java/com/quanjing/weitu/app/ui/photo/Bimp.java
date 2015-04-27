@@ -24,8 +24,8 @@ public class Bimp {
 		int i = 0;
 		Bitmap bitmap = null;
 		while (true) {
-			if ((options.outWidth >> i <= 1000)
-					&& (options.outHeight >> i <= 1000)) {
+			if ((options.outWidth >> i <= 200)
+					&& (options.outHeight >> i <= 200)) {
 				in = new BufferedInputStream(
 						new FileInputStream(new File(path)));
 				options.inSampleSize = (int) Math.pow(2.0D, i);

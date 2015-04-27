@@ -1,5 +1,6 @@
 package com.quanjing.weitu.app.protocol.service;
 
+import com.quanjing.weitu.app.model.MWTCircleLike;
 import com.quanjing.weitu.app.protocol.MWTAssetData;
 import com.quanjing.weitu.app.protocol.MWTCircleComment;
 import com.quanjing.weitu.app.protocol.MWTUserData;
@@ -14,4 +15,5 @@ public class MWTNewCircleResult extends MWTServiceResult {
     public List<MWTAssetData> assets;
     public List<MWTActivityData> activities;
     public List<MWTCircleComment> activComment;
+    public List<MWTCircleLike> activLike;
 }

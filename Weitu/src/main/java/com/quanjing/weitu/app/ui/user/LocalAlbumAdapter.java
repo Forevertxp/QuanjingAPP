@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -28,17 +30,23 @@ import java.util.ArrayList;
 public class LocalAlbumAdapter extends BaseAdapter {
     final String TAG = getClass().getSimpleName();
     private Context mContext;
+    private HeaderGridView mGridView;
     private ArrayList<ImageItem> dataList;
     private DisplayMetrics dm;
     BitmapCache cache;
 
-    public LocalAlbumAdapter(Context c, ArrayList<ImageItem> dataList) {
+    private boolean doLoad = true;
+
+    public LocalAlbumAdapter(Context c, ArrayList<ImageItem> dataList, HeaderGridView gridView) {
         mContext = c;
+        mGridView = gridView;
         cache = new BitmapCache();
         this.dataList = dataList;
         dm = new DisplayMetrics();
         ((Activity) mContext).getWindowManager().getDefaultDisplay()
                 .getMetrics(dm);
+
+        mGridView.setOnScrollListener(new ScrollListenerImpl());
     }
 
     public int getCount() {
@@ -104,10 +112,32 @@ public class LocalAlbumAdapter extends BaseAdapter {
         } else {
             final ImageItem item = dataList.get(position);
             viewHolder.imageView.setTag(item.imagePath);
-            cache.displayBmp(viewHolder.imageView, item.thumbnailPath, item.imagePath,
-                    callback);
+            if (doLoad)
+                cache.displayBmp(viewHolder.imageView, item.thumbnailPath, item.imagePath,
+                        callback);
         }
         return convertView;
+    }
+
+    private class ScrollListenerImpl implements AbsListView.OnScrollListener {
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            doLoad = true;
+        }
+
+        /**
+         * GridView停止滑动时下载图片
+         * 其余情况下取消所有正在下载或者等待下载的任务
+         */
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            //仅当GridView静止时才去下载图片，GridView滑动时取消所有正在下载的任务
+            if (scrollState == SCROLL_STATE_IDLE) {
+                doLoad = true;
+            } else {
+                doLoad = false;
+            }
+        }
     }
 
 }

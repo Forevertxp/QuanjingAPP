@@ -27,11 +27,15 @@ import com.quanjing.weitu.app.model.MWTAssetManager;
 import com.quanjing.weitu.app.model.MWTAuthManager;
 import com.quanjing.weitu.app.model.MWTRestManager;
 import com.quanjing.weitu.app.model.MWTTalent;
+import com.quanjing.weitu.app.model.MWTUser;
 import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.protocol.service.MWTUserResult;
 import com.quanjing.weitu.app.protocol.service.MWTUserService;
 import com.quanjing.weitu.app.ui.common.MWTBase2Activity;
 import com.quanjing.weitu.app.ui.common.MWTBaseActivity;
+import com.quanjing.weitu.app.ui.photo.ImageItem;
+import com.quanjing.weitu.app.ui.user.ImageEditorActivity;
+import com.quanjing.weitu.app.ui.user.ImageInfoEditorActivity;
 import com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity;
 
 import org.lcsky.SVProgressHUD;
@@ -48,13 +52,17 @@ public class MWTAssetActivity extends MWTBase2Activity {
     private MWTAssetFragment _assetFragment;
     private boolean hasLiked;
     private MenuItem item;
+    private MenuItem editItem;
+    MWTAsset asset;
+
+    private static int START_EDIT = 0x1010;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_asset);
-        setTitleText("图片");
+        setTitleText("         图 片");
 
         if (savedInstanceState == null) {
             if (_assetFragment == null) {
@@ -69,7 +77,18 @@ public class MWTAssetActivity extends MWTBase2Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        item = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, null);
+        MWTAssetManager am = MWTAssetManager.getInstance();
+        asset = am.getAssetByID(getIntent().getStringExtra(ARG_ASSETID));
+        MWTUser currentuser = MWTUserManager.getInstance().getCurrentUser();
+
+        if (currentuser != null && asset != null && asset.getOwnerUserID().equals(currentuser.getUserID())) {
+            editItem = menu.add(Menu.NONE, Menu.NONE, Menu.NONE, null);
+            editItem.setIcon(R.drawable.ic_edit);
+            editItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+
+        //參數1:群組id, 參數2:itemId, 參數3:item順序, 參數4:item名稱
+        item = menu.add(Menu.NONE, Menu.FIRST, Menu.FIRST, null);
         SpannableString s = new SpannableString("\u2665喜欢");
         int color = MWTThemer.getInstance().getActionBarForegroundColor();
         s.setSpan(new ForegroundColorSpan(color), 0, s.length(), 0);
@@ -82,8 +101,6 @@ public class MWTAssetActivity extends MWTBase2Activity {
 
         //item.setTitle(s);
 
-        MWTAssetManager am = MWTAssetManager.getInstance();
-        MWTAsset asset = am.getAssetByID(getIntent().getStringExtra(ARG_ASSETID));
         if (asset != null) {
             String[] likerIDs = asset.getLikedUserIDs();
             if (isContain(likerIDs)) {
@@ -95,7 +112,6 @@ public class MWTAssetActivity extends MWTBase2Activity {
             }
             item.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
-
         return true;
     }
 
@@ -113,17 +129,39 @@ public class MWTAssetActivity extends MWTBase2Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        String assetID = getIntent().getStringExtra(ARG_ASSETID);
-        if (hasLiked)
-            cancelFavotite(assetID);
-        else
-            addFavotite(assetID);
+        switch (item.getItemId()) {
+            case Menu.NONE:
+                Intent editorIntent = new Intent(MWTAssetActivity.this, ImageInfoEditorActivity.class);
+                editorIntent.putExtra("imgUrl", asset.getImageInfo().smallURL);
+                editorIntent.putExtra("asset_id", asset.getAssetID());
+                startActivityForResult(editorIntent, START_EDIT);
+                break;
+            case Menu.FIRST:
+                String assetID = getIntent().getStringExtra(ARG_ASSETID);
+                if (hasLiked)
+                    cancelFavotite(assetID);
+                else
+                    addFavotite(assetID);
+                break;
+            default:
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void setTitleText(String title) {
         super.setTitleText(title);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == START_EDIT && resultCode == RESULT_OK) {
+            setResult(RESULT_FIRST_USER);
+            finish();
+        }
     }
 
     public class CustomTypefaceSpan extends TypefaceSpan {

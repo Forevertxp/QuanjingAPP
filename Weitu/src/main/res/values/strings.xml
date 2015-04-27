@@ -31,9 +31,10 @@
     <string name="title_activity_mwtother_user">用户信息</string>
     <string name="title_activity_mwtimage_flow">MWTImageFlowActivity</string>
     <string name="title_activity_user_square">圈子</string>
+    <string name="viewpager_indicator">%1$d/%2$d</string>
 
     <!-- 图片浏览 -->
-    <string name="only_choose_num">超出可选图片张数</string>
+    <string name="only_choose_num">最多选取9张图片</string>
     <string name="invalidSD">sdcard无效或没有插入！</string>
     <string name="photo">选择相册</string>
     <string name="album">相册</string>
@@ -46,5 +47,11 @@
     <string name="title_activity_mwtsub_found">MWTSubFoundActivity</string>
     <string name="title_activity_mwtavatar">MWTAvatarActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_image_info_editor">ImageInfoEditorActivity</string>
+    <string name="title_activity_mwtpic">MWTPicActivity</string>
+    <string name="title_activity_mwtlike_assets">MWTLikeAssetsActivity</string>
+    <string name="title_activity_phone_friend">PhoneFriendActivity</string>
+    <string name="title_activity_local_image_brower">LocalImageBrowerActivity</string>
+    <string name="title_activity_choose_image_brower">ChooseImageBrowerActivity</string>
 
 </resources>

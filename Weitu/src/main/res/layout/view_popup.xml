@@ -12,9 +12,10 @@
         android:layout_weight="1"
         android:background="@drawable/select_comment_left"
         android:drawableLeft="@drawable/circle_praise"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:padding="4dp"
-        android:text="赞"
+        android:layout_marginLeft="5dp"
+        android:text=" 赞"
         android:textColor="#ffffffff"
         android:textSize="16sp" />
 
@@ -32,9 +33,10 @@
         android:layout_weight="1"
         android:background="@drawable/select_comment_right"
         android:drawableLeft="@drawable/circle_comment"
-        android:gravity="center_vertical"
+        android:gravity="center"
+        android:layout_marginLeft="5dp"
         android:padding="4dp"
-        android:text="评论"
+        android:text=" 评论"
         android:textColor="#ffffffff"
         android:textSize="16sp" />
 </LinearLayout>

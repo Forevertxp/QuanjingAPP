@@ -14,6 +14,7 @@ public class MWTNewCircle {
     private List<MWTAsset> assets;
     private List<MWTUser> subjectUsers;
     private List<MWTCircleComment> circleComments;
+    private List<MWTCircleLike> circleLikes;
     private String activityType;
     private String friendsOrFans;
 
@@ -80,5 +81,13 @@ public class MWTNewCircle {
 
     public void setFriendsOrFans(String friendsOrFans) {
         this.friendsOrFans = friendsOrFans;
+    }
+
+    public List<MWTCircleLike> getCircleLikes() {
+        return circleLikes;
+    }
+
+    public void setCircleLikes(List<MWTCircleLike> circleLikes) {
+        this.circleLikes = circleLikes;
     }
 }

@@ -104,7 +104,6 @@ public class MWTOtherUserActivity extends MWTBase2Activity implements AdapterVie
         _gridView.setAdapter(_gridViewAdapter);
 
         otherUserID = getIntent().getStringExtra("userID");
-        syncGridViewAdapterData();
 
         // 初始化数据
         onUploadedButtonClicked();
@@ -144,8 +143,10 @@ public class MWTOtherUserActivity extends MWTBase2Activity implements AdapterVie
             userService.queryUserPublicInfo(otherUserID, new Callback<MWTUserResult>() {
                 @Override
                 public void success(MWTUserResult result, Response response) {
-                    MWTUserManager.getInstance().registerUserData(result.user);
-                    syncGridViewAdapterData();
+                    if (result!=null){
+                        MWTUserManager.getInstance().registerUserData(result.user);
+                        syncGridViewAdapterData();
+                    }
                 }
 
                 @Override
@@ -196,7 +197,8 @@ public class MWTOtherUserActivity extends MWTBase2Activity implements AdapterVie
 
             _gridViewAdapter.setAssets(assets);
             if (assets == null) {
-                manualRefresh();
+                //manualRefresh(); //部分手机不生效，无法调用performRefresh()方法
+                performRefresh();
             }
         }
     }

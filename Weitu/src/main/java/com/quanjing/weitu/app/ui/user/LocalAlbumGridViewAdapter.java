@@ -1,9 +1,11 @@
 package com.quanjing.weitu.app.ui.user;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,12 +17,15 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.quanjing.weitu.R;
+import com.quanjing.weitu.app.ui.photo.Bimp;
 import com.quanjing.weitu.app.ui.photo.BitmapCache;
 import com.quanjing.weitu.app.ui.photo.ImageItem;
 import com.quanjing.weitu.app.ui.photo.PictureUtil;
+import com.quanjing.weitu.app.ui.photo.PublicWay;
 
 /**
  *
@@ -34,7 +39,7 @@ public class LocalAlbumGridViewAdapter extends BaseAdapter {
     BitmapCache cache;
 
     public LocalAlbumGridViewAdapter(Context c, ArrayList<ImageItem> dataList,
-                                ArrayList<ImageItem> selectedDataList) {
+                                     ArrayList<ImageItem> selectedDataList) {
         mContext = c;
         cache = new BitmapCache();
         this.dataList = dataList;
@@ -87,7 +92,7 @@ public class LocalAlbumGridViewAdapter extends BaseAdapter {
         public TextView textView;
     }
 
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -126,11 +131,24 @@ public class LocalAlbumGridViewAdapter extends BaseAdapter {
         viewHolder.toggleButton.setOnClickListener(new ToggleClickListener(viewHolder.choosetoggle));
         if (selectedDataList.contains(dataList.get(position))) {
             viewHolder.toggleButton.setChecked(true);
-            viewHolder.choosetoggle.setVisibility(View.VISIBLE);
+            viewHolder.choosetoggle.setBackgroundResource(R.drawable.plugin_camera_choosed);
         } else {
             viewHolder.toggleButton.setChecked(false);
-            viewHolder.choosetoggle.setVisibility(View.GONE);
+            viewHolder.choosetoggle.setBackgroundResource(R.drawable.plugin_camera_no_choosed);
         }
+        viewHolder.imageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> imgList = new ArrayList<String>();
+                ArrayList<String> webList = new ArrayList<String>();
+                ArrayList<String> captionList = new ArrayList<String>();
+                Intent intent = new Intent(mContext, LocalImageBrowerActivity.class);
+                LocalImageBrowerActivity.imageItems = dataList;
+                intent.putExtra(LocalImageBrowerActivity.FROM_TYPE, 2);
+                intent.putExtra(LocalImageBrowerActivity.EXTRA_IMAGE_INDEX, position);
+                mContext.startActivity(intent);
+            }
+        });
         return convertView;
     }
 
@@ -150,24 +168,32 @@ public class LocalAlbumGridViewAdapter extends BaseAdapter {
             if (view instanceof ToggleButton) {
                 ToggleButton toggleButton = (ToggleButton) view;
                 int position = (Integer) toggleButton.getTag();
-                if (dataList != null && mOnItemClickListener != null
-                        && position < dataList.size()) {
-                    mOnItemClickListener.onItemClick(toggleButton, position, toggleButton.isChecked(), chooseBt);
+                if (toggleButton.isChecked()) {
+                    if (Bimp.tempSelectBitmap.size() >= PublicWay.num) {
+                        toggleButton.setChecked(false);
+                        chooseBt.setBackgroundResource(R.drawable.plugin_camera_no_choosed);
+                        if (!removeOneData(dataList.get(position))) {
+                            Toast.makeText(mContext, R.string.only_choose_num, 200).show();
+                        }
+                        return;
+                    }
+                    chooseBt.setBackgroundResource(R.drawable.plugin_camera_choosed);
+                    Bimp.tempSelectBitmap.add(dataList.get(position));
+                } else {
+                    Bimp.tempSelectBitmap.remove(dataList.get(position));
+                    chooseBt.setBackgroundResource(R.drawable.plugin_camera_no_choosed);
                 }
+                LocalAlbumActivity.isShowOkEditView();
             }
         }
     }
 
-
-    private OnItemClickListener mOnItemClickListener;
-
-    public void setOnItemClickListener(OnItemClickListener l) {
-        mOnItemClickListener = l;
-    }
-
-    public interface OnItemClickListener {
-        public void onItemClick(ToggleButton view, int position,
-                                boolean isChecked, Button chooseBt);
+    private boolean removeOneData(ImageItem imageItem) {
+        if (Bimp.tempSelectBitmap.contains(imageItem)) {
+            Bimp.tempSelectBitmap.remove(imageItem);
+            return true;
+        }
+        return false;
     }
 
 }

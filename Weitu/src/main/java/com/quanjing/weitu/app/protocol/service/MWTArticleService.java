@@ -1,6 +1,9 @@
 package com.quanjing.weitu.app.protocol.service;
 
+import com.quanjing.weitu.app.model.MWTRotation;
 import com.quanjing.weitu.app.protocol.MWTDailyData;
+
+import java.util.ArrayList;
 
 import retrofit.Callback;
 import retrofit.http.GET;
@@ -18,6 +21,10 @@ public interface MWTArticleService {
     public void fetchFoundActicles(@Query("page") int page,
                                    @Query("count") int count,
                                    Callback<MWTArticleResult> callback);
+
+
+    @GET("/Rotation")
+    public void fetchFoundRotations(Callback<ArrayList<MWTRotation>> callback);
 
     @GET("/article")
     public void fetchSubActicles(@Query("type") int type,

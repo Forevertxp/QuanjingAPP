@@ -1,4 +1,4 @@
-package com.quanjing.quanjing.app.ui;
+package com.quanjing.weitu.app.ui.common;
 
 import android.content.Context;
 import android.util.AttributeSet;

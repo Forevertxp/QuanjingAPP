@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -40,14 +41,25 @@ import com.quanjing.weitu.app.ui.sharesdk.SharePopupWindow;
 import com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity;
 
 import org.apache.http.Header;
+import org.apache.http.util.ByteArrayBuffer;
+import org.apache.http.util.EncodingUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.lcsky.SVProgressHUD;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.sharesdk.framework.Platform;
@@ -81,15 +93,16 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
 
     //public static final String SHARE_APP_KEY = "21b0f35691b8";
     private Button shareButton;
-
     private SharePopupWindow share;
+
+    private ArrayList<String> imgList = new ArrayList<String>();
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
-        setTitleText(getIntent().getExtras().getString("caption"));
+        setTitleText("          "+getIntent().getExtras().getString("caption"));
         contentWebView = (WebView) findViewById(R.id.webview);
         // 启用javascript
         contentWebView.getSettings().setJavaScriptEnabled(true);
@@ -101,6 +114,27 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
         // 添加js交互接口类，并起别名 imagelistner
         contentWebView.addJavascriptInterface(new JavascriptInterface(this), "imagelistner");
         contentWebView.setWebViewClient(new MyWebViewClient());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Document doc = Jsoup.connect(contentUrl).get();
+                    Elements links = doc.select("img");
+                    for (int i = 0; i < links.size(); i++) {
+                        Element element = links.get(i);
+                        String imgUrl = element.attr("src");
+                        if (imgUrl.indexOf("http:") != -1) {
+                            imgList.add(imgUrl);
+                        }
+                    }
+                    if (!doc.title().equals(""))
+                        caption = doc.title();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
 
         ShareSDK.initSDK(this);
@@ -119,6 +153,7 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == MENU_SHARE) {
             performShare();
+            //share();
             return true;
         }
 
@@ -131,8 +166,9 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
         ShareModel model = new ShareModel();
         model.setImageUrl(imageurl);
         model.setText(text);
-        model.setTitle(title);
-        model.setUrl(url);
+        model.setTitle(caption);
+        model.setUrl(contentUrl + "&d=1");
+
         share.initShareParams(model);
         share.showShareWindow();
         // 显示窗口 (设置layout在PopupWindow中显示的位置)
@@ -168,20 +204,35 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
         public JavascriptInterface(Context context) {
             this.context = context;
         }
-
+        // 4.2及以上版本需要增加注释语句@JavascriptInterface
+        @android.webkit.JavascriptInterface
         public void openImage(String img) {
-            Intent intent = new Intent();
-            intent.putExtra("image", img);
-            intent.setClass(context, ShowWebImageActivity.class);
-            context.startActivity(intent);
+            if (imgList.size() > 0) {
+                int position = 0;
+                for (int i = 0; i < imgList.size(); i++) {
+                    if (imgList.get(i).equals(img)) {
+                        position = i;
+                        break;
+                    }
+                }
+                Intent intent = new Intent(context, ImagePagerActivity.class);
+                // 图片url,为了演示这里使用常量，一般从数据库中或网络中获取
+                intent.putExtra(ImagePagerActivity.EXTRA_IMAGE_URLS, imgList);
+                intent.putExtra(ImagePagerActivity.EXTRA_IMAGE_INDEX, position);
+                context.startActivity(intent);
+            }
+//            Intent intent = new Intent();
+//            intent.putExtra("image", img);
+//            intent.setClass(context, ShowWebImageActivity.class);
+//            context.startActivity(intent);
         }
+
     }
 
     // 监听
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
             return super.shouldOverrideUrlLoading(view, url);
         }
 
@@ -246,10 +297,11 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
                                 oks.setNotification(0, appName);
                                 // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
                                 oks.setTitle(caption);
+
                                 // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
                                 //oks.setTitleUrl(contentUrl);
                                 // text是分享文本，所有平台都需要这个字段
-                                oks.setText(caption + "\n" + contentUrl);
+                                //oks.setText(caption + "\n" + contentUrl);
 
                                 // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
                                 oks.setImagePath(outputFilePath);
@@ -313,7 +365,6 @@ public class MWTContentActivity extends MWTBase2Activity implements PlatformActi
             });
         }
     }
-
 
     @Override
     protected void onResume() {

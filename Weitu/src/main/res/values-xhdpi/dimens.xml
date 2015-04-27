@@ -1,0 +1,8 @@
+<resources>
+    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
+    <dimen name="circle_margin_right">25dp</dimen>
+    <dimen name="circle_width_left">110dp</dimen>
+    <dimen name="circle_onepic_width_left">90dp</dimen>
+</resources>

@@ -35,6 +35,12 @@ public interface MWTUserService
                                           @Query("count") int count,
                                           Callback<MWTAssetsResult> callback);
 
+    @GET("/users/{user_id}/comment")
+    public void queryUserCommentAssets(@Path("user_id") String userID,
+                                          @Query("startIndex") int startIndex,
+                                          @Query("count") int count,
+                                          Callback<MWTAssetsResult> callback);
+
     @GET("/users/{user_id}/likes")
     public void queryUserLikedAssets(@Path("user_id") String userID,
                                           @Query("startIndex") int startIndex,

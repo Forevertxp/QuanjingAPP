@@ -540,4 +540,87 @@ public class MWTUser implements Serializable {
                     });
         }
     }
+
+    // comment assets info
+    public void refreshCommentAssets(final MWTCallback callback) {
+        fetchCommentAssets(0, 50, true, callback);
+    }
+
+    public void loadMoreCommentAssets(final MWTCallback callback) {
+        int startIndex;
+        if (_assetsInfo != null && _assetsInfo.getCommentAssets() != null) {
+            startIndex = _assetsInfo.getCommentAssets().size();
+        } else {
+            startIndex = 0;
+        }
+
+        fetchCommentAssets(startIndex, 50, false, callback);
+    }
+
+    private void fetchCommentAssets(final int startIndex, final int count, final boolean dropOld, final MWTCallback callback) {
+        if (!isPublicInfoAvailable()) {
+            refreshPublicInfo(new MWTCallback() {
+                @Override
+                public void success() {
+                    fetchCommentAssets(startIndex, count, dropOld, callback);
+                }
+
+                @Override
+                public void failure(MWTError error) {
+                    if (callback != null) {
+                        callback.failure(error);
+                    }
+                }
+            });
+        } else {
+            MWTUserService userService = MWTUserManager.getInstance().getUserService();
+            userService.queryUserCommentAssets(_userID, startIndex, count,
+                    new Callback<MWTAssetsResult>() {
+                        @Override
+                        public void success(MWTAssetsResult result, Response response) {
+                            if (result == null) {
+                                if (callback != null) {
+                                    callback.failure(new MWTError(-1, "服务器返回数据出错"));
+                                }
+                                return;
+                            }
+
+                            if (result.error != null) {
+                                if (callback != null) {
+                                    callback.failure(result.error);
+                                }
+                                return;
+                            }
+
+                            List<MWTAssetData> assetDatas = result.assets;
+                            if (assetDatas == null) {
+                                callback.failure(new MWTError(-1, "服务器返回数据错误，缺少assets信息。"));
+                                return;
+                            }
+
+                            List<MWTAsset> assets = MWTAssetManager.getInstance().registerAssetDatas(assetDatas);
+                            if (dropOld) {
+                                _assetsInfo.setCommentAssets(new ArrayList<MWTAsset>(assets));
+                            } else {
+                                if (_assetsInfo.getCommentAssets() == null) {
+                                    _assetsInfo.setCommentAssets(new ArrayList<MWTAsset>(assets));
+                                } else {
+                                    _assetsInfo.getCommentAssets().addAll(assets);
+                                }
+                            }
+
+                            if (callback != null) {
+                                callback.success();
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError retrofitError) {
+                            if (callback != null) {
+                                callback.failure(new MWTError(retrofitError));
+                            }
+                        }
+                    });
+        }
+    }
 }

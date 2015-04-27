@@ -55,6 +55,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="6dp"
         android:layout_toRightOf="@id/iv_avatar"
+        android:horizontalSpacing="4dp"
         android:verticalSpacing="4dp" />
 
     <TextView
@@ -72,15 +73,42 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/gridview"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="@dimen/circle_margin_right"
         android:background="@drawable/ic_circle_comment" />
+
+    <RelativeLayout
+        android:id="@+id/likeRL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeText"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/iv_avatar">
+
+        <ImageView
+            android:id="@+id/likerImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/ic_circle_like" />
+
+        <TextView
+            android:id="@+id/likeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/likerImage"
+            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/common_blue" />
+    </RelativeLayout>
+
 
     <ListView
         android:id="@+id/commentList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/timeText"
-        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/likeRL"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/iv_avatar"
         android:background="#f0f1f2"></ListView>
 

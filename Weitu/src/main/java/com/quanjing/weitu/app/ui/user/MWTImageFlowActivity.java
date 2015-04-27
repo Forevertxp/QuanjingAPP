@@ -18,6 +18,7 @@ import com.quanjing.weitu.app.model.MWTAsset;
 import com.quanjing.weitu.app.model.MWTUser;
 import com.quanjing.weitu.app.model.MWTUserAssetsInfo;
 import com.quanjing.weitu.app.model.MWTUserManager;
+import com.quanjing.weitu.app.protocol.MWTCommentData;
 import com.quanjing.weitu.app.protocol.MWTError;
 import com.quanjing.weitu.app.ui.asset.MWTAssetActivity;
 import com.quanjing.weitu.app.ui.common.MWTBase2Activity;
@@ -26,6 +27,7 @@ import com.quanjing.weitu.app.ui.common.MWTListAssetsAdapter;
 
 import org.lcsky.SVProgressHUD;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterView.OnItemClickListener {
@@ -38,8 +40,11 @@ public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterVie
     private static int UPLOADASSET = 1;
     private static int DOWNLOADASSET = 2;
     private static int LIKEDASSET = 3;
+    private static int COMMENTASSET = 4;
 
     private String userID;
+
+    private static int DELETE = 0x1212;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,14 @@ public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterVie
             case 3:
                 //getActionBar().setTitle("喜欢");
                 setTitleText("喜欢");
+                break;
+            case 4:
+                //getActionBar().setTitle("喜欢");
+                setTitleText("喜欢的图片");
+                break;
+            case 5:
+                //getActionBar().setTitle("喜欢");
+                setTitleText("评论的图片");
                 break;
         }
         _pullToRefreshStaggeredGridView = (PullToRefreshStaggeredGridView) findViewById(R.id.GridView);
@@ -159,6 +172,42 @@ public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterVie
                     }
                 });
                 break;
+            case 4:
+                user.refreshLikedAssets(new MWTCallback() {
+                    @Override
+                    public void success() {
+                        _gridViewAdapter.setAssets(user.getAssetsInfo().getLikedAssets());
+                        if (callback != null) {
+                            callback.success();
+                        }
+                    }
+
+                    @Override
+                    public void failure(MWTError error) {
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+                break;
+            case 5:
+                user.refreshCommentAssets(new MWTCallback() {
+                    @Override
+                    public void success() {
+                        _gridViewAdapter.setAssets(user.getAssetsInfo().getCommentAssets());
+                        if (callback != null) {
+                            callback.success();
+                        }
+                    }
+
+                    @Override
+                    public void failure(MWTError error) {
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+                break;
             default:
                 if (callback != null) {
                     callback.success();
@@ -236,6 +285,42 @@ public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterVie
                     }
                 });
                 break;
+            case 4:
+                user.loadMoreLikedAssets(new MWTCallback() {
+                    @Override
+                    public void success() {
+                        _gridViewAdapter.setAssets(user.getAssetsInfo().getLikedAssets());
+                        if (callback != null) {
+                            callback.success();
+                        }
+                    }
+
+                    @Override
+                    public void failure(MWTError error) {
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+                break;
+            case 5:
+                user.loadMoreCommentAssets(new MWTCallback() {
+                    @Override
+                    public void success() {
+                        _gridViewAdapter.setAssets(user.getAssetsInfo().getCommentAssets());
+                        if (callback != null) {
+                            callback.success();
+                        }
+                    }
+
+                    @Override
+                    public void failure(MWTError error) {
+                        if (callback != null) {
+                            callback.failure(error);
+                        }
+                    }
+                });
+                break;
             default:
                 if (callback != null) {
                     callback.success();
@@ -296,8 +381,16 @@ public class MWTImageFlowActivity extends MWTBase2Activity implements AdapterVie
         if (asset != null) {
             Intent intent = new Intent(this, MWTAssetActivity.class);
             intent.putExtra(MWTAssetActivity.ARG_ASSETID, asset.getAssetID());
-            startActivity(intent);
+            startActivityForResult(intent, DELETE);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==DELETE){
+            performRefresh();
+        }
     }
 }

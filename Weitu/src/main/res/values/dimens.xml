@@ -15,4 +15,5 @@
     <dimen name="page_margin_width">12dp</dimen>
 
     <dimen name="ui_10_dip">10dip</dimen>
+
 </resources>

@@ -37,7 +37,7 @@
     <!-- For safe cases -->
     <color name="common_green">#60990c</color>
     <!-- For suggestions -->
-    <color name="common_blue">#4b8bbd</color>
+    <color name="common_blue">#0090ff</color>
     <color name="tab_indicator_text_selected">#ffffff</color>
     <color name="tab_indicator_text_unselected">#aac5d7</color>
     <color name="page_viewer_margin_color">#007800</color>

@@ -19,8 +19,10 @@ public class FollowShipLoader {
                 new Callback<MWTUserResult>() {
                     @Override
                     public void success(MWTUserResult result, Response response) {
-                        int num = result.user.fellowshipInfo.followerNum;
-                        callback.success(num);
+                        if (result!=null){
+                            int num = result.user.fellowshipInfo.followerNum;
+                            callback.success(num);
+                        }
                     }
 
                     @Override

@@ -60,9 +60,11 @@ public class NoScrollGridAdapter extends BaseAdapter {
         } else {
             column = 3;
         }
+        int leftWidth = (int)ctx.getResources().getDimension(R.dimen.circle_width_left);
+        int onePicLeftWidth = (int)ctx.getResources().getDimension(R.dimen.circle_onepic_width_left);
+        // 根据列数计算项目宽度，以使总宽度尽量填充屏幕
         if (column == 3) {
-            // 根据列数计算项目宽度，以使总宽度尽量填充屏幕
-            int itemWidth = (int) (ctx.getResources().getDisplayMetrics().widthPixels - column * 70) / column;
+            int itemWidth = (int) (ctx.getResources().getDisplayMetrics().widthPixels - leftWidth) / column;
             // 下面根据比例计算item的高度，此处只是h使用itemWidth
             int itemHeight = itemWidth;
             RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
@@ -81,14 +83,14 @@ public class NoScrollGridAdapter extends BaseAdapter {
             imageView.setLayoutParams(param);
             if (imageUrls.get(position) != null && imageUrls.get(position).getImageInfo() != null && !imageUrls.get(position).getImageInfo().url.equals("")) {
                 float ratio = (float) (imageUrls.get(position).getImageInfo().height) / (float) (imageUrls.get(position).getImageInfo().width);
-//                Picasso.with(ctx)
-//                        .load(imageUrls.get(position).getImageInfo().smallURL)
-//                        .resize(ctx.getResources().getDisplayMetrics().widthPixels-200, (int) ((ctx.getResources().getDisplayMetrics().widthPixels-200) * ratio))
-//                        .into(imageView);
                 Picasso.with(ctx)
                         .load(imageUrls.get(position).getImageInfo().smallURL)
-                        .resize(250, (int) (250 * ratio))
+                        .resize(ctx.getResources().getDisplayMetrics().widthPixels-onePicLeftWidth, (int) ((ctx.getResources().getDisplayMetrics().widthPixels-onePicLeftWidth) * ratio))
                         .into(imageView);
+//                Picasso.with(ctx)
+//                        .load(imageUrls.get(position).getImageInfo().smallURL)
+//                        .resize(250, (int) (250 * ratio))
+//                        .into(imageView);
             }
 
         }

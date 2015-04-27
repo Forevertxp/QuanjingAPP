@@ -16,43 +16,116 @@
         android:background="@color/ClearImageViewColor" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <LinearLayout
             android:id="@+id/DownloadButton"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1.0"
-            android:background="@drawable/btn_white"
-            android:text="下载"
-            android:textColor="#0090ff"
-            android:textSize="16sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_talent_btn"
+            android:gravity="center"
+            android:padding="5dp">
 
-        <Button
+            <RelativeLayout
+                android:id="@+id/btn_favorate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_talent_download"></RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="下载"
+                android:textColor="#9fa1a3"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/CollectButton"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1.0"
-            android:background="@drawable/btn_white"
-            android:text="收藏"
-            android:textColor="#0090ff"
-            android:textSize="16sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_talent_btn"
+            android:gravity="center"
+            android:padding="5dp">
 
-        <Button
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_talent_collect"></RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="收藏"
+                android:textColor="#9fa1a3"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/ShareButton"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_weight="1.0"
-            android:background="@drawable/btn_white"
-            android:text="分享"
-            android:textColor="#0090ff"
-            android:textSize="16sp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_talent_btn"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_talent_share"></RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="分享"
+                android:textColor="#9fa1a3"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/CommentButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/ic_talent_btn"
+            android:gravity="center"
+            android:padding="5dp">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_talent_comment"></RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="评论"
+                android:textColor="#9fa1a3"
+                android:textSize="16dp" />
+        </LinearLayout>
+
 
     </LinearLayout>
 
@@ -90,10 +163,12 @@
 
         <GridView
             android:id="@+id/like"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></GridView>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_toLeftOf="@+id/likenum"
+            android:scrollbars="none"></GridView>
 
     </RelativeLayout>
 

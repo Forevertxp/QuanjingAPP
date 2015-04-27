@@ -1,23 +1,19 @@
 package com.quanjing.weitu.app.ui.user;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.media.ExifInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
+import android.os.SystemClock;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,47 +21,36 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quanjing.weitu.R;
 import com.quanjing.weitu.app.common.MWTUtils;
 import com.quanjing.weitu.app.model.MWTRestManager;
-import com.quanjing.weitu.app.protocol.service.MWTAddCommentResult;
+import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.protocol.service.MWTAssetService;
 import com.quanjing.weitu.app.protocol.service.MWTAssetsResult;
-import com.quanjing.weitu.app.protocol.service.MWTCommentService;
-import com.quanjing.weitu.app.ui.asset.MWTAssetsAdapter;
 import com.quanjing.weitu.app.ui.common.MWTBase2Activity;
-import com.quanjing.weitu.app.ui.common.MWTBaseActivity;
-import com.quanjing.weitu.app.ui.photo.AlbumActivity;
 import com.quanjing.weitu.app.ui.photo.Bimp;
 import com.quanjing.weitu.app.ui.photo.FileUtils;
-import com.quanjing.weitu.app.ui.photo.GalleryActivity;
 import com.quanjing.weitu.app.ui.photo.ImageItem;
 import com.quanjing.weitu.app.ui.photo.PictureUtil;
-import com.quanjing.weitu.app.ui.photo.PublicWay;
 import com.quanjing.weitu.app.ui.photo.Res;
 
 import org.lcsky.SVProgressHUD;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -88,6 +73,7 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
     private GridAdapter adapter;
     private View parentView;
     private TextView photo_text;
+    private EditText captionET, keywordsET, positionET;
     private PopupWindow pop = null;
     private LinearLayout ll_popup;
     public static Bitmap bimap;
@@ -103,6 +89,11 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
     private ImageView iv_switch_open_notification;
     private ImageView iv_switch_close_notification;
 
+    private boolean compress = true;
+    private String is_private = "false";
+
+    private static int BROWSE_CHOOSE_PHOTO = 0x2121;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Res.init(this);
@@ -112,8 +103,27 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
         //PublicWay.activityList.add(this);
         parentView = getLayoutInflater().inflate(R.layout.activity_mwtupload_pic, null);
         setContentView(parentView);
-        Init();
-        setTitleText("上传");
+        if (Bimp.tempSelectBitmap.size() == 0) {
+            SVProgressHUD.showInView(this, "加载图片中...", true);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Message message = Message.obtain();
+                    for (int i = 0; i < 30; i++) {
+                        SystemClock.sleep(100);
+                        if (Bimp.tempSelectBitmap.size() > 0) {
+                            break;
+                        }
+                    }
+                    message.what = 0X1212;
+                    mHandler.sendMessage(message);
+                }
+            });
+            thread.start();
+        } else {
+            init();
+        }
+        setTitleText("        上传");
 
         rl_switch_private = (RelativeLayout) findViewById(R.id.rl_private);
 
@@ -131,9 +141,11 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
                 if (iv_switch_open_private.getVisibility() == View.VISIBLE) {
                     iv_switch_open_private.setVisibility(View.INVISIBLE);
                     iv_switch_close_private.setVisibility(View.VISIBLE);
+                    is_private = "false";
                 } else {
                     iv_switch_open_private.setVisibility(View.VISIBLE);
                     iv_switch_close_private.setVisibility(View.INVISIBLE);
+                    is_private = "true";
                 }
             }
         });
@@ -144,9 +156,11 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
                 if (iv_switch_open_notification.getVisibility() == View.VISIBLE) {
                     iv_switch_open_notification.setVisibility(View.INVISIBLE);
                     iv_switch_close_notification.setVisibility(View.VISIBLE);
+                    compress = true;
                 } else {
                     iv_switch_open_notification.setVisibility(View.VISIBLE);
                     iv_switch_close_notification.setVisibility(View.INVISIBLE);
+                    compress = false;
                 }
             }
         });
@@ -176,6 +190,8 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
             if (Bimp.tempSelectBitmap.size() > 0) {
                 imageItem = Bimp.tempSelectBitmap.get(0);
                 uploadPhotos(imageItem.imagePath, 1);
+            } else {
+                SVProgressHUD.showInViewWithoutIndicator(MWTUploadPicActivity.this, "请选择图片", 2.0f);
             }
             return true;
         }
@@ -183,9 +199,27 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void Init() {
+    private Handler mHandler = new Handler() {
+
+        public void handleMessage(Message message) {
+            SVProgressHUD.dismiss(MWTUploadPicActivity.this);
+            if (message.what == 0X1212) {
+                init();
+            }
+        }
+
+    };
+
+    public void init() {
 
         photo_text = (TextView) findViewById(R.id.photo_text);
+        captionET = (EditText) findViewById(R.id.caption);
+        keywordsET = (EditText) findViewById(R.id.keywords);
+        positionET = (EditText) findViewById(R.id.position);
+        String imgLongtitude = Bimp.tempSelectBitmap.get(0).longtitude;
+        String imgLatitude = Bimp.tempSelectBitmap.get(0).latitude;
+        if (!TextUtils.isEmpty(imgLongtitude) && !TextUtils.isEmpty(imgLatitude))
+            setTapCoordinates(Float.parseFloat(imgLatitude), Float.parseFloat(imgLongtitude));
         noScrollgridview = (GridView) findViewById(R.id.noScrollgridview);
         int height = ((getResources().getDisplayMetrics().widthPixels - 20) / 4);
         if (Bimp.tempSelectBitmap.size() > 4 && Bimp.tempSelectBitmap.size() < 9) {
@@ -198,8 +232,78 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
             noScrollgridview.setLayoutParams(layoutParams);
         }
         noScrollgridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        adapter = new GridAdapter(this);
+        adapter = new GridAdapter(MWTUploadPicActivity.this);
         noScrollgridview.setAdapter(adapter);
+        noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                ArrayList<String> imgList = new ArrayList<String>();
+//                ArrayList<String> webList = new ArrayList<String>();
+//                ArrayList<String> captionList = new ArrayList<String>();
+//                Intent intent = new Intent(MWTUploadPicActivity.this, LocalImageBrowerActivity.class);
+//                LocalImageBrowerActivity.imageItems = Bimp.tempSelectBitmap;
+//                intent.putExtra(LocalImageBrowerActivity.FROM_TYPE, 3);
+//                intent.putExtra(LocalImageBrowerActivity.EXTRA_IMAGE_INDEX, i);
+//                startActivity(intent);
+                Intent intent = new Intent(MWTUploadPicActivity.this,
+                        ChooseImageBrowerActivity.class);
+                intent.putExtra("position", "1");
+                intent.putExtra("ID", i);
+                startActivityForResult(intent, BROWSE_CHOOSE_PHOTO);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == BROWSE_CHOOSE_PHOTO && resultCode == RESULT_OK) {
+            adapter.notifyDataSetChanged();
+            int height = ((getResources().getDisplayMetrics().widthPixels - 20) / 4);
+            if (Bimp.tempSelectBitmap.size() == 0) {
+                finish();
+                return;
+            }
+            if (Bimp.tempSelectBitmap.size() < 5) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, height);
+                noScrollgridview.setLayoutParams(layoutParams);
+            }
+            if (Bimp.tempSelectBitmap.size() > 4 && Bimp.tempSelectBitmap.size() < 9) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, height * 2);
+                noScrollgridview.setLayoutParams(layoutParams);
+            }
+            if (Bimp.tempSelectBitmap.size() > 8) {
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, height * 3);
+                noScrollgridview.setLayoutParams(layoutParams);
+            }
+        }
+    }
+
+    /**
+     * set Tap Coordinates
+     */
+    public void setTapCoordinates(float latitude, float longtitude) {
+
+        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(latitude, longtitude, 1);
+            StringBuilder add = new StringBuilder();
+            if (addresses.size() > 0) {
+                int max = addresses.get(0).getMaxAddressLineIndex();
+                //add.append(addresses.get(0).getAddressLine(max - 1));
+                //取得全部名称时如下
+//                for (int i = 0; i < max; i++) {
+//                    add.append(addresses.get(0).getAddressLine(i) + " ");
+//                }
+                for (int i = 0; i < max; i++) {
+                    if (i == 2)
+                        break;
+                    add.append(addresses.get(0).getAddressLine(i) + " ");
+                }
+            }
+            positionET.setText(add.toString());
+        } catch (IOException e) {
+        }
     }
 
     /**
@@ -213,7 +317,6 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
         SVProgressHUD.showInView(MWTUploadPicActivity.this, "正在上传第" + PHOTONUM + "照片...", true);
         MWTRestManager restManager = MWTRestManager.getInstance();
         MWTAssetService assetService = restManager.create(MWTAssetService.class);
-        final boolean is_private = false;
         TypedFile imageTypedFile = null;
         int degree = 0; //图片拍摄角度
         if (filePath != null && !filePath.equals("")) {
@@ -226,14 +329,18 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
             BitmapFactory.decodeFile(filePath, options);
             //压缩图片
             String tempPath;
-            if (options.outWidth > 640) {
-                try {
-                    //Bitmap bitmap = PictureUtil.getSmallBitmap(filePath);
-                    Bitmap bitmap = PictureUtil.compressImage(filePath);
-                    tempPath = PictureUtil.createTempFile(bitmap);
-                } catch (IOException e) {
+            if (compress) {
+                if (((degree == 0 || degree == 180) && options.outWidth > 640) || ((degree == 90 || degree == 270) && options.outHeight > 640)) {
+                    try {
+                        // Bitmap bitmap = PictureUtil.getSmallBitmap(filePath);
+                        Bitmap bitmap = PictureUtil.compressImage(filePath, degree);
+                        tempPath = PictureUtil.createTempFile(bitmap);
+                    } catch (IOException e) {
+                        tempPath = filePath;
+                        e.printStackTrace();
+                    }
+                } else {
                     tempPath = filePath;
-                    e.printStackTrace();
                 }
             } else {
                 tempPath = filePath;
@@ -242,7 +349,7 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
             File imageFile = new File(tempPath);
             imageTypedFile = new TypedFile("application/octet-stream", imageFile);
         }
-        assetService.uploadAssets("upload", "", photo_text.getText().toString(), is_private, isNew, imageTypedFile, degree, new Callback<MWTAssetsResult>() {
+        assetService.uploadAssets("upload", captionET.getText().toString(), keywordsET.getText().toString(), positionET.getText().toString(), "", is_private, isNew, imageTypedFile, degree, "android", new Callback<MWTAssetsResult>() {
             @Override
             public void success(MWTAssetsResult result, Response response) {
                 lock.unlock();
@@ -250,12 +357,17 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
                 if (PHOTONUM == Bimp.tempSelectBitmap.size()) {
                     Bimp.tempSelectBitmap.clear();
                     PHOTONUM = 0;
+                    Intent intent = new Intent("data.broadcast.action");
+                    sendBroadcast(intent);
                     finish();
                     PictureUtil.deleteTempFile(FileUtils.SDPATH + "quanjing_temp.jpg");
                 } else {
                     ImageItem imageItem = Bimp.tempSelectBitmap.get(PHOTONUM);
                     uploadPhotos(imageItem.imagePath, 0);
                 }
+                MWTUserManager userManager = MWTUserManager.getInstance();
+                if (userManager.getCurrentUser() != null)
+                    userManager.getCurrentUser().markDataDirty();
             }
 
             @Override
@@ -265,6 +377,8 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
                 if (PHOTONUM == Bimp.tempSelectBitmap.size()) {
                     Bimp.tempSelectBitmap.clear();
                     PHOTONUM = 0;
+                    Intent intent = new Intent("data.broadcast.action");
+                    sendBroadcast(intent);
                     finish();
                     PictureUtil.deleteTempFile(FileUtils.SDPATH + "quanjing_temp.jpg");
                 } else {
@@ -274,6 +388,11 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
             }
         });
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration config) {
+        super.onConfigurationChanged(config);
     }
 
     public class GridAdapter extends BaseAdapter {
@@ -326,7 +445,8 @@ public class MWTUploadPicActivity extends MWTBase2Activity {
                 holder = (ViewHolder) convertView.getTag();
             }
             int degree = PictureUtil.readPictureDegree(Bimp.tempSelectBitmap.get(position).imagePath);
-            holder.image.setImageBitmap(PictureUtil.rotaingImageView(degree, Bimp.tempSelectBitmap.get(position).getBitmap()));
+            if (Bimp.tempSelectBitmap.get(position).getBitmap() != null)
+                holder.image.setImageBitmap(PictureUtil.rotaingImageView(degree, Bimp.tempSelectBitmap.get(position).getBitmap()));
             return convertView;
         }
 

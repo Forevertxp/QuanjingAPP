@@ -1,5 +1,6 @@
 package com.quanjing.weitu.app.ui.photo;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import android.database.Cursor;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.Images.Thumbnails;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class AlbumHelper {
@@ -151,7 +153,7 @@ public class AlbumHelper {
 
         String columns[] = new String[]{Media._ID, Media.BUCKET_ID,
                 Media.PICASA_ID, Media.DATA, Media.DISPLAY_NAME, Media.TITLE,
-                Media.SIZE, Media.BUCKET_DISPLAY_NAME, Media.DATE_TAKEN};
+                Media.SIZE, Media.BUCKET_DISPLAY_NAME, Media.DATE_TAKEN, Media.LATITUDE, Media.LONGITUDE};
         Cursor cur = cr.query(Media.EXTERNAL_CONTENT_URI, columns, null, null,
                 null);
         if (cur.moveToFirst()) {
@@ -165,6 +167,8 @@ public class AlbumHelper {
             int bucketIdIndex = cur.getColumnIndexOrThrow(Media.BUCKET_ID);
             int picasaIdIndex = cur.getColumnIndexOrThrow(Media.PICASA_ID);
             int photoDateTaken = cur.getColumnIndexOrThrow(Media.DATE_TAKEN);
+            int photoLatitude = cur.getColumnIndexOrThrow(Media.LATITUDE);
+            int photoLongtitude = cur.getColumnIndexOrThrow(Media.LONGITUDE);
             int totalNum = cur.getCount();
 
             do {
@@ -177,6 +181,8 @@ public class AlbumHelper {
                 String bucketId = cur.getString(bucketIdIndex);
                 String picasaId = cur.getString(picasaIdIndex);
                 String date = cur.getString(photoDateTaken);
+                String latitude = cur.getString(photoLatitude);
+                String longtitude = cur.getString(photoLongtitude);
 
                 Log.i(TAG, _id + ", bucketId: " + bucketId + ", picasaId: "
                         + picasaId + " name:" + name + " path:" + path
@@ -194,10 +200,13 @@ public class AlbumHelper {
                 ImageItem imageItem = new ImageItem();
                 imageItem.imageId = _id;
                 imageItem.imagePath = path;
+                imageItem.latitude = latitude;
+                imageItem.longtitude = longtitude;
                 imageItem.thumbnailPath = thumbnailList.get(_id);
                 if (date != null && !date.equals(""))
                     imageItem.imageDate = Long.parseLong(date);
-                bucket.imageList.add(imageItem);
+                if (new File(path).exists())
+                    bucket.imageList.add(imageItem);
 
             } while (cur.moveToNext());
         }

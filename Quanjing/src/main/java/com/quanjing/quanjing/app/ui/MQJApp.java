@@ -20,7 +20,7 @@ public class MQJApp extends Application
         MWTThemer.getInstance().setActionBarForegroundColor(getResources().getColor(R.color.ActionBarForegroundColor));
 
         final String API_BASE_URL = "http://app.quanjing.com/qjapi";
-        MWTConfig.getInstance().init(API_BASE_URL, "全景 v1.0", this);
+        MWTConfig.getInstance().init(API_BASE_URL, "全景 v1.6", this);
 
         /**
          * 开源框架 Image-Loader

@@ -12,6 +12,8 @@ public class ImageItem implements Serializable {
 	public String thumbnailPath;
 	public String imagePath;
     public long imageDate;
+    public String longtitude;
+    public String latitude;
 	private Bitmap bitmap;
 	public boolean isSelected = false;
 	

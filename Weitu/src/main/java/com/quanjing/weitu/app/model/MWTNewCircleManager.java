@@ -175,12 +175,19 @@ public class MWTNewCircleManager {
 
                 for (MWTNewCircle circle:newcircles){
                     List<MWTCircleComment> newCommentList = new ArrayList<MWTCircleComment>();
+                    List<MWTCircleLike> newLikeList = new ArrayList<MWTCircleLike>();
                     for (MWTCircleComment comment:result.activComment){
                         if (comment.getActivityId().equals(circle.getActivityID())){
                             newCommentList.add(comment);
                         }
                     }
+                    for (MWTCircleLike like:result.activLike){
+                        if (like.getActivityid().equals(circle.getActivityID())){
+                            newLikeList.add(like);
+                        }
+                    }
                     circle.setCircleComments(newCommentList);
+                    circle.setCircleLikes(newLikeList);
                 }
 
 

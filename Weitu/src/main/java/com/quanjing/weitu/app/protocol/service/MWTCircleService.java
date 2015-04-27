@@ -1,5 +1,7 @@
 package com.quanjing.weitu.app.protocol.service;
 
+import com.quanjing.weitu.app.model.MWTCircleLike;
+
 import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -25,4 +27,10 @@ public interface MWTCircleService {
                      @Field("replyuserid") String replyuserid,
                      @Field("content") String content,
                      Callback<MWTAddCommentResult> cb);
+
+    // 对动作点赞
+    @FormUrlEncoded
+    @POST("/activity/like")
+    void addLikeToActivity(@Field("activityid") String activityid,
+                              Callback<MWTCricleLikeResult> cb);
 }

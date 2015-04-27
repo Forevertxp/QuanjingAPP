@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/GeneralBackgroundColor"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,8 +23,7 @@
                 android:layout_marginLeft="14dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginStart="14dp"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/logo_douban" />
+                android:layout_marginTop="12dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

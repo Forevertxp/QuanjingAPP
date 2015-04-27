@@ -36,6 +36,7 @@ import com.quanjing.weitu.app.ui.common.MWTDataRetriever;
 import com.quanjing.weitu.app.ui.photo.AlbumActivity;
 import com.quanjing.weitu.app.ui.photo.Bimp;
 import com.quanjing.weitu.app.ui.photo.ImageItem;
+import com.quanjing.weitu.app.ui.user.LocalAlbumActivity;
 import com.quanjing.weitu.app.ui.user.MWTUserInfoEditActivity;
 
 /**
@@ -144,7 +145,7 @@ public class MWTNewCommunityFragment extends Fragment {
             }
             Bimp.tempSelectBitmap.clear();
             Intent intent = new Intent(getActivity(),
-                    AlbumActivity.class);
+                    LocalAlbumActivity.class);
             startActivity(intent);
             return true;
         }

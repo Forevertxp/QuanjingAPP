@@ -903,25 +903,27 @@ public class MWTNewCommunityAdapter extends BaseAdapter {
 
     public void loadmore(final MWTCallback callback) {
         MWTTalentManager cm = MWTTalentManager.getInstance();
-        long max_item_timestamp = Long.parseLong(talentList.get(talentList.size() - 1).getAsset().get_createTime());
+        if(talentList.size()>0){
+            long max_item_timestamp = Long.parseLong(talentList.get(talentList.size() - 1).getAsset().get_createTime());
 
-        cm.refreshTalents2(COUNT, max_item_timestamp, new MWTCallback() {
-            @Override
-            public void success() {
-                updatePresentingTalents(2);
-                notifyDataSetChanged();
-                if (callback != null) {
-                    callback.success();
+            cm.refreshTalents2(COUNT, max_item_timestamp, new MWTCallback() {
+                @Override
+                public void success() {
+                    updatePresentingTalents(2);
+                    notifyDataSetChanged();
+                    if (callback != null) {
+                        callback.success();
+                    }
                 }
-            }
 
-            @Override
-            public void failure(MWTError error) {
-                if (callback != null) {
-                    callback.failure(error);
+                @Override
+                public void failure(MWTError error) {
+                    if (callback != null) {
+                        callback.failure(error);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 

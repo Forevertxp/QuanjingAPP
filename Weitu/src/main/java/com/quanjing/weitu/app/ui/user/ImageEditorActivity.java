@@ -57,10 +57,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -76,6 +79,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,6 +117,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -135,6 +141,7 @@ public class ImageEditorActivity extends MWTBase2Activity {
     private GridAdapter adapter;
     private View parentView;
     private TextView photo_text;
+    private EditText captionET, keywordsET, positionET;
     private PopupWindow pop = null;
     private LinearLayout ll_popup;
     public static Bitmap bimap;
@@ -149,6 +156,9 @@ public class ImageEditorActivity extends MWTBase2Activity {
     private ImageView iv_switch_close_notification;
 
     private boolean compress = true;
+    private String is_private = "false";
+
+    final MWTUserManager userManager = MWTUserManager.getInstance();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +170,7 @@ public class ImageEditorActivity extends MWTBase2Activity {
         parentView = getLayoutInflater().inflate(R.layout.activity_mwtupload_pic, null);
         setContentView(parentView);
         Init();
-        setTitleText("上传");
+        setTitleText("      上传");
 
         rl_switch_private = (RelativeLayout) findViewById(R.id.rl_private);
         iv_switch_open_private = (ImageView) findViewById(R.id.iv_switch_open_private);
@@ -176,9 +186,11 @@ public class ImageEditorActivity extends MWTBase2Activity {
                 if (iv_switch_open_private.getVisibility() == View.VISIBLE) {
                     iv_switch_open_private.setVisibility(View.INVISIBLE);
                     iv_switch_close_private.setVisibility(View.VISIBLE);
+                    is_private = "false";
                 } else {
                     iv_switch_open_private.setVisibility(View.VISIBLE);
                     iv_switch_close_private.setVisibility(View.INVISIBLE);
+                    is_private = "true";
                 }
             }
         });
@@ -217,7 +229,6 @@ public class ImageEditorActivity extends MWTBase2Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == 0) {
-            MWTUserManager userManager = MWTUserManager.getInstance();
             if (userManager.getCurrentUser() != null && userManager.getCurrentUser().getNickname().equals("")) {
                 Intent intent = new Intent(ImageEditorActivity.this, MWTUserInfoEditActivity.class);
                 Toast.makeText(ImageEditorActivity.this, "请先完善个人信息", 100).show();
@@ -238,15 +249,65 @@ public class ImageEditorActivity extends MWTBase2Activity {
     }
 
     public void Init() {
-
         photo_text = (TextView) findViewById(R.id.photo_text);
+        captionET = (EditText) findViewById(R.id.caption);
+        keywordsET = (EditText) findViewById(R.id.keywords);
+        positionET = (EditText) findViewById(R.id.position);
+        String imgLongtitude = getIntent().getStringExtra("imgLongtitude");
+        String imgLatitude = getIntent().getStringExtra("imgLatitude");
+        if (!TextUtils.isEmpty(imgLongtitude) && !TextUtils.isEmpty(imgLatitude))
+            setTapCoordinates(Float.parseFloat(imgLatitude), Float.parseFloat(imgLongtitude));
         noScrollgridview = (GridView) findViewById(R.id.noScrollgridview);
         noScrollgridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
 
-        String imageUrl = getIntent().getStringExtra("imgUrl");
+        final String imageUrl = getIntent().getStringExtra("imgUrl");
         imageList.add(imageUrl);
         adapter = new GridAdapter(this, imageList);
         noScrollgridview.setAdapter(adapter);
+        noScrollgridview.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ArrayList<String> imgList = new ArrayList<String>();
+                ArrayList<String> webList = new ArrayList<String>();
+                ArrayList<String> captionList = new ArrayList<String>();
+                Intent intent = new Intent(ImageEditorActivity.this, LocalImageBrowerActivity.class);
+                ImageItem item = new ImageItem();
+                item.setImagePath(imageUrl);
+                ArrayList<ImageItem> items = new ArrayList<ImageItem>();
+                items.add(item);
+                LocalImageBrowerActivity.imageItems =items;
+                intent.putExtra(LocalImageBrowerActivity.FROM_TYPE, 3);
+                intent.putExtra(LocalImageBrowerActivity.EXTRA_IMAGE_INDEX, i);
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * set Tap Coordinates
+     */
+    public void setTapCoordinates(float latitude, float longtitude) {
+
+        Geocoder geoCoder = new Geocoder(getBaseContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geoCoder.getFromLocation(latitude, longtitude, 1);
+            StringBuilder add = new StringBuilder();
+            if (addresses.size() > 0) {
+                int max = addresses.get(0).getMaxAddressLineIndex();
+                // add.append(addresses.get(0).getAddressLine(max - 1));
+                // 取得全部名称时如下
+//                for (int i = 0; i < max; i++) {
+//                    add.append(addresses.get(0).getAddressLine(i) + " ");
+//                }
+                for (int i = 0; i < max; i++) {
+                    if (i == 2)
+                        break;
+                    add.append(addresses.get(0).getAddressLine(i) + " ");
+                }
+            }
+            positionET.setText(add.toString());
+        } catch (IOException e) {
+        }
     }
 
     /**
@@ -257,7 +318,6 @@ public class ImageEditorActivity extends MWTBase2Activity {
         SVProgressHUD.showInView(ImageEditorActivity.this, "正在上传照片...", true);
         MWTRestManager restManager = MWTRestManager.getInstance();
         MWTAssetService assetService = restManager.create(MWTAssetService.class);
-        final boolean is_private = false;
         TypedFile imageTypedFile = null;
         int degree = 0; //图片拍摄角度
         if (filePath != null && !filePath.equals("")) {
@@ -269,14 +329,19 @@ public class ImageEditorActivity extends MWTBase2Activity {
             BitmapFactory.decodeFile(filePath, options);
             //压缩图片
             String tempPath;
-            if (compress && options.outWidth > 640) {
-                try {
-                    // Bitmap bitmap = PictureUtil.getSmallBitmap(filePath);
-                    Bitmap bitmap = PictureUtil.compressImage(filePath);
-                    tempPath = PictureUtil.createTempFile(bitmap);
-                } catch (IOException e) {
+
+            if (compress) {
+                if (((degree == 0 || degree == 180) && options.outWidth > 640) || ((degree == 90 || degree == 270) && options.outHeight > 640)) {
+                    try {
+                        // Bitmap bitmap = PictureUtil.getSmallBitmap(filePath);
+                        Bitmap bitmap = PictureUtil.compressImage(filePath, degree);
+                        tempPath = PictureUtil.createTempFile(bitmap);
+                    } catch (IOException e) {
+                        tempPath = filePath;
+                        e.printStackTrace();
+                    }
+                } else {
                     tempPath = filePath;
-                    e.printStackTrace();
                 }
             } else {
                 tempPath = filePath;
@@ -285,11 +350,13 @@ public class ImageEditorActivity extends MWTBase2Activity {
             File imageFile = new File(tempPath);
             imageTypedFile = new TypedFile("application/octet-stream", imageFile);
         }
-        assetService.uploadAssets("upload", "", photo_text.getText().toString(), is_private, 1, imageTypedFile, degree, new Callback<MWTAssetsResult>() {
+        assetService.uploadAssets("upload", captionET.getText().toString(), keywordsET.getText().toString(), positionET.getText().toString(), "", is_private, 1, imageTypedFile, degree, "android", new Callback<MWTAssetsResult>() {
             @Override
             public void success(MWTAssetsResult result, Response response) {
                 SVProgressHUD.dismiss(ImageEditorActivity.this);
                 Toast.makeText(ImageEditorActivity.this, "上传成功", 500).show();
+                if (userManager.getCurrentUser() != null)
+                    userManager.getCurrentUser().markDataDirty();
                 finish();
                 PictureUtil.deleteTempFile(FileUtils.SDPATH + "quanjing_temp.jpg");
             }

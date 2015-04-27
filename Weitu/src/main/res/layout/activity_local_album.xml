@@ -4,14 +4,35 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <GridView
+        android:id="@+id/myGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="2dp"
+        android:background="@color/albumback"
+        android:layout_below="@+id/titlebar"
+        android:horizontalSpacing="10dp"
+        android:numColumns="4"
+        android:verticalSpacing="10dp" />
+
+    <TextView
+        android:id="@+id/myText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_photo"
+        android:textColor="@color/black" />
+
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
+        android:paddingTop="12dp"
         android:visibility="gone">
 
         <RelativeLayout
@@ -20,21 +41,22 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/nativeShare"
+                android:id="@+id/nativeDel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ic_pic_share"
+                android:background="@drawable/ic_pic_del"
                 android:gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nativeShare"
+                android:layout_below="@+id/nativeDel"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:text="分享"
+                android:text="删除"
+                android:visibility="gone"
                 android:textColor="@color/lightgrey" />
         </RelativeLayout>
 
@@ -59,7 +81,8 @@
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:text="上传到云"
-                android:textColor="@color/lightgrey" />
+                android:textColor="@color/lightgrey"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -69,45 +92,25 @@
             android:layout_weight="1">
 
             <ImageView
-                android:id="@+id/nativeDel"
+                android:id="@+id/nativeShare"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:background="@drawable/ic_pic_del"
+                android:background="@drawable/ic_pic_share2"
                 android:gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/nativeDel"
+                android:layout_below="@+id/nativeShare"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:text="删除"
-                android:textColor="@color/lightgrey" />
+                android:text="分享"
+                android:textColor="@color/lightgrey"
+                android:visibility="gone"/>
         </RelativeLayout>
 
-
     </LinearLayout>
-
-    <GridView
-        android:id="@+id/myGrid"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/bottom_layout"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="2dp"
-        android:background="@color/albumback"
-        android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:verticalSpacing="10dp" />
-
-    <TextView
-        android:id="@+id/myText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/no_photo"
-        android:textColor="@color/black" />
 
 </RelativeLayout>

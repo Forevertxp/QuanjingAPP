@@ -1,5 +1,8 @@
 package com.quanjing.weitu.app.model;
 
+import android.os.Build;
+import android.provider.Settings;
+
 import com.quanjing.weitu.app.common.MWTCallback1;
 import com.quanjing.weitu.app.protocol.MWTAssetData;
 import com.quanjing.weitu.app.protocol.MWTError;
@@ -84,9 +87,7 @@ public class MWTAssetManager
 
     public void searchAssets(final String keyword, final int startIndex, int count, final MWTCallback1<List<MWTAsset>> callback)
     {
-        getAssetService().search(keyword,
-                                 startIndex,
-                                 count,
+        getAssetService().search(keyword, startIndex,count, Build.PRODUCT,
                                  new Callback<MWTAssetsResult>()
                                  {
 

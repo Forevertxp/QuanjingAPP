@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,13 +40,20 @@ import com.quanjing.weitu.app.model.MWTUser;
 import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.protocol.MWTCommentData;
 import com.quanjing.weitu.app.protocol.MWTError;
+import com.quanjing.weitu.app.protocol.MWTUserData;
 import com.quanjing.weitu.app.protocol.service.MWTAssetService;
+import com.quanjing.weitu.app.protocol.service.MWTCommentResult;
+import com.quanjing.weitu.app.protocol.service.MWTCommentService;
 import com.quanjing.weitu.app.protocol.service.MWTServiceResult;
 import com.quanjing.weitu.app.protocol.service.MWTUserResult;
 import com.quanjing.weitu.app.protocol.service.MWTUserService;
+import com.quanjing.weitu.app.ui.community.LikedUserImageLoader;
+import com.quanjing.weitu.app.ui.community.UserLoader;
 import com.quanjing.weitu.app.ui.community.square.XCRoundImageView;
+import com.quanjing.weitu.app.ui.found.ImagePagerActivity;
 import com.quanjing.weitu.app.ui.found.ShowWebImageActivity;
 import com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity;
+import com.quanjing.weitu.app.ui.user.MWTOtherUserActivity;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
@@ -66,9 +74,10 @@ public class MWTAssetHeaderView extends FrameLayout {
     private Context _context;
 
     private DynamicHeightImageView _imageView;
-    private Button _downloadButton;
-    private Button _collectButton;
-    private Button _shareButton;
+    private LinearLayout _downloadButton;
+    private LinearLayout _collectButton;
+    private LinearLayout _shareButton;
+    private LinearLayout _commentButton;
 
     private TextView _serialTextView;
     private TextView _captionTextView;
@@ -77,6 +86,7 @@ public class MWTAssetHeaderView extends FrameLayout {
     private TextView _likeTextView;
     private GridView _likeGridView;
     private MWTAsset _asset;
+    private GridViewAdapter likeGridViewAdapter;
 
     private List<String> images = new ArrayList<>(); // 关注者头像url
 
@@ -110,9 +120,10 @@ public class MWTAssetHeaderView extends FrameLayout {
     private void setupViews() {
         _imageView = (DynamicHeightImageView) findViewById(R.id.ImageView);
 
-        _downloadButton = (Button) findViewById(R.id.DownloadButton);
-        _collectButton = (Button) findViewById(R.id.CollectButton);
-        _shareButton = (Button) findViewById(R.id.ShareButton);
+        _downloadButton = (LinearLayout) findViewById(R.id.DownloadButton);
+        _collectButton = (LinearLayout) findViewById(R.id.CollectButton);
+        _shareButton = (LinearLayout) findViewById(R.id.ShareButton);
+        _commentButton = (LinearLayout) findViewById(R.id.CommentButton);
 
         _serialTextView = (TextView) findViewById(R.id.SerialTextView);
         _captionTextView = (TextView) findViewById(R.id.CaptionTextView);
@@ -140,6 +151,15 @@ public class MWTAssetHeaderView extends FrameLayout {
             @Override
             public void onClick(View view) {
                 performShare();
+            }
+        });
+
+        _commentButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(_context, MWTCommentActivity.class);
+                intent.putExtra(MWTAssetActivity.ARG_ASSETID, _asset.getAssetID());
+                _context.startActivity(intent);
             }
         });
     }
@@ -177,9 +197,31 @@ public class MWTAssetHeaderView extends FrameLayout {
             _imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent();
-                    intent.putExtra("image", imageUrl);
-                    intent.setClass(_context, ShowWebImageActivity.class);
+//                    Intent intent = new Intent();
+//                    intent.putExtra("caption", _asset.getCaption());
+//                    intent.putExtra("webUrl", _asset.get_webURL());
+//                    intent.putExtra("image", imageUrl);
+//                    intent.setClass(_context, ShowWebImageActivity.class);
+//                    _context.startActivity(intent);
+
+                    ArrayList<String> imgList = new ArrayList<String>();
+                    ArrayList<String> webList = new ArrayList<String>();
+                    ArrayList<String> captionList = new ArrayList<String>();
+                    imgList.add(imageUrl);
+                    webList.add(_asset.get_webURL());
+                    captionList.add(_asset.getCaption());
+                    if (_asset.getRelatedAssets() != null)
+                        for (MWTAsset mwtAsset : _asset.getRelatedAssets()) {
+                            imgList.add(mwtAsset.getImageInfo().url);
+                            webList.add(mwtAsset.get_webURL());
+                            captionList.add(mwtAsset.getCaption());
+                        }
+                    Intent intent = new Intent(_context, ImagePagerActivity.class);
+                    // 图片url,为了演示这里使用常量，一般从数据库中或网络中获取
+                    intent.putExtra(ImagePagerActivity.EXTRA_IMAGE_URLS, imgList);
+                    intent.putExtra("captions", captionList);
+                    intent.putExtra("webs", webList);
+                    intent.putExtra(ImagePagerActivity.EXTRA_IMAGE_INDEX, 0);
                     _context.startActivity(intent);
                 }
             });
@@ -235,33 +277,49 @@ public class MWTAssetHeaderView extends FrameLayout {
             } else {
                 _commentListView.setVisibility(View.GONE);
             }
+
             String[] userIDS = asset.getLikedUserIDs();
-            MWTUserManager userManager = MWTUserManager.getInstance();
             if (userIDS != null && userIDS.length > 0) {
-                for (int i = 0; i < userIDS.length; i++) {
-                    if (userManager.getUserByID(userIDS[i]) != null && userManager.getUserByID(userIDS[i]).getAssetsInfo() != null)
-                        images.add(userManager.getUserByID(userIDS[i]).getAvatarImageInfo().url);
-                }
                 _likeTextView.setVisibility(View.GONE);
+                likeGridViewAdapter = new GridViewAdapter(userIDS);
+                _likeGridView.setNumColumns(6);
+                _likeGridView.setAdapter(likeGridViewAdapter);
             } else {
                 _likeTextView.setVisibility(View.VISIBLE);
             }
-            GridViewAdapter gridViewAdapter = new GridViewAdapter();
-            _likeGridView.setAdapter(gridViewAdapter);
-            List<MWTCommentData> commentDataList = asset.get_latestComments();
-            if (commentDataList != null && commentDataList.size() > 0) {
-                _moreTextVIew.setText("查看所有评论");
-                _moreTextVIew.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(_context, MWTCommentActivity.class);
-                        intent.putExtra(MWTAssetActivity.ARG_ASSETID, asset.getAssetID());
-                        _context.startActivity(intent);
-                    }
-                });
-                _commentListView.setAdapter(new CommentAdapter(_context, commentDataList));
 
-            }
+            MWTRestManager restManager = MWTRestManager.getInstance();
+            MWTCommentService commentService = restManager.create(MWTCommentService.class);
+            commentService.getComments(asset.getAssetID(), new Callback<MWTCommentResult>() {
+                @Override
+                public void success(MWTCommentResult result, Response response) {
+                    if (result != null && result.error != null) {
+                        Toast.makeText(_context, "获取数据错误", 1).show();
+                        return;
+                    }
+                    if (result != null) {
+                        List<MWTCommentData> commentDataList = result.comments;
+                        if (commentDataList != null && commentDataList.size() > 0) {
+                            _moreTextVIew.setText("查看所有评论");
+                            _moreTextVIew.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(_context, MWTCommentActivity.class);
+                                    intent.putExtra(MWTAssetActivity.ARG_ASSETID, asset.getAssetID());
+                                    _context.startActivity(intent);
+                                }
+                            });
+                            _commentListView.setAdapter(new CommentAdapter(_context, commentDataList));
+                        }
+                    }
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+
         } else {
             _commentListView.setVisibility(View.GONE);
         }
@@ -419,6 +477,7 @@ public class MWTAssetHeaderView extends FrameLayout {
                 @Override
                 public void success(MWTServiceResult mwtServiceResult, Response response) {
                     SVProgressHUD.dismiss(_context);
+                    MWTUserManager.getInstance().getCurrentUser().markDataDirty();
                     Toast.makeText(_context, "成功", 500).show();
                 }
 
@@ -434,24 +493,6 @@ public class MWTAssetHeaderView extends FrameLayout {
 
     private void performShare() {
         MWTAuthManager am = MWTAuthManager.getInstance();
-        if (!am.isAuthenticated()) {
-            new AlertDialog.Builder(_context)
-                    .setTitle("请登录")
-                    .setMessage("请在登录后使用分享功能")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(_context, MWTAuthSelectActivity.class);
-                            _context.startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .show();
-            return;
-        }
 
         if (_asset != null && _asset.getImageInfo() != null && _asset.getImageInfo().url != null) {
             final String imageURL = _asset.getImageInfo().url;
@@ -489,15 +530,19 @@ public class MWTAssetHeaderView extends FrameLayout {
                                 oks.setNotification(0, appName);
 
                                 String caption = _asset.getCaption();
-                                if (caption != null&&!caption.equals("")) {
+                                if (caption != null && !caption.equals("")) {
                                     oks.setTitle(_asset.getCaption());
-                                }else {
+                                } else {
                                     oks.setTitle("全景网");
                                 }
 
                                 oks.setImagePath(outputFilePath);
-                                if (_asset.get_webURL() != null && !_asset.get_webURL().equals(""))
-                                    oks.setUrl(_asset.get_webURL());
+                                if (_asset.get_webURL() != null && !_asset.get_webURL().equals("")) {
+                                    if (_asset.get_webURL().indexOf("zone.quanjing.com") == -1) {
+                                        oks.setUrl(_asset.get_webURL());
+                                    }
+                                }
+
                                 oks.setSilent(false);
 
                                 // 令编辑页面显示为Dialog模式
@@ -579,22 +624,34 @@ public class MWTAssetHeaderView extends FrameLayout {
 
         @Override
         public View getView(int position, View convertView, ViewGroup viewGroup) {
-            ViewHolder holder;
-            holder = new ViewHolder();
+            final ViewHolder holder = new ViewHolder();
 
             convertView = View.inflate(context, R.layout.item_comment_min, null);
             holder.imageView = (XCRoundImageView) convertView.findViewById(R.id.iv_avatar);
             holder.textView = (TextView) convertView.findViewById(R.id.tv_title);
             holder.contentTextView = (TextView) convertView.findViewById(R.id.tv_content);
 
-            MWTCommentData commentData = commentDataList.get(position);
-            MWTUserManager userManager = MWTUserManager.getInstance();
-            MWTUser user = userManager.getUserByID(commentData.userID);
-            holder.textView.setText(user.getNickname());
-            holder.contentTextView.setText(commentData.content);
-            Picasso.with(context)
-                    .load(user.getAvatarImageInfo().url)
-                    .into(holder.imageView);
+            final MWTCommentData commentData = commentDataList.get(position);
+            MWTUser u = (MWTUserManager.getInstance().getUserByID(commentData.userID));
+            if (u != null) {
+                holder.textView.setText(u.getNickname());
+                holder.contentTextView.setText(commentData.content);
+                Picasso.with(context)
+                        .load(u.getAvatarImageInfo().url).resize(160, 120)
+                        .into(holder.imageView);
+            } else {
+                UserLoader userLoader = new UserLoader();
+                userLoader.fetchUserByID(commentData.userID, new UserLoader.UserCallBack() {
+                    @Override
+                    public void success(MWTUserData userData) {
+                        holder.textView.setText(userData.nickname);
+                        holder.contentTextView.setText(commentData.content);
+                        Picasso.with(context)
+                                .load(userData.avatarImageInfo.url).resize(160, 120)
+                                .into(holder.imageView);
+                    }
+                });
+            }
             return convertView;
         }
 
@@ -605,22 +662,40 @@ public class MWTAssetHeaderView extends FrameLayout {
         }
     }
 
+    /**
+     * 点赞人的头像
+     */
     private class GridViewAdapter extends BaseAdapter {
+        private String[] userIds;
+
+        public GridViewAdapter(String[] userIds) {
+            this.userIds = userIds;
+        }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageview; // 声明ImageView的对象
-            if (convertView == null) {
-                imageview = new ImageView(_context); // 实例化ImageView的对象
-                imageview.setScaleType(ImageView.ScaleType.FIT_START); // 设置缩放方式
-                imageview.setPadding(5, 0, 5, 0); // 设置ImageView的内边距
-            } else {
-                imageview = (ImageView) convertView;
-            }
-            Picasso.with(_context)
-                    .load(images.get(position)).resize(80, 80)
-                    .into(imageview);
-            return imageview; // 返回ImageView
+            convertView = View.inflate(_context, R.layout.item_likeuser_image, null);
+            final ImageView imageview = (ImageView) convertView.findViewById(R.id.avatar);
+            final String userID = userIds[position];
+            imageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(_context, MWTOtherUserActivity.class);
+                    intent.putExtra("userID", userID);
+                    _context.startActivity(intent);
+                }
+            });
+            LikedUserImageLoader imageLoader = new LikedUserImageLoader();
+            imageLoader.fetchLikedUserImageUrl(userID, new LikedUserImageLoader.LikerCallBack() {
+                @Override
+                public void success(String imageUrl) {
+                    Picasso.with(_context)
+                            .load(imageUrl)
+                            .into(imageview);
+                }
+            });
+
+            return convertView;
         }
 
         /*
@@ -651,7 +726,7 @@ public class MWTAssetHeaderView extends FrameLayout {
          */
         @Override
         public int getCount() {
-            return images.size();
+            return userIds.length;
         }
     }
 }

@@ -19,8 +19,10 @@ public class LikedUserImageLoader {
                 new Callback<MWTUserResult>() {
                     @Override
                     public void success(MWTUserResult result, Response response) {
-                        String imageUrl = result.user.avatarImageInfo.url;
-                        callback.success(imageUrl);
+                        if (result != null) {
+                            String imageUrl = result.user.avatarImageInfo.url;
+                            callback.success(imageUrl);
+                        }
                     }
 
                     @Override

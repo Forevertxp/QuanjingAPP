@@ -196,7 +196,7 @@ public class MWTOtherUserHeader extends FrameLayout {
             _downloadedButton.setVisibility(View.VISIBLE);
 
             _nicknameTextView.setText(_user.getNickname());
-            _uploadedButton.setText(_user.getAssetsInfo().getPublicAssetNum() + _user.getAssetsInfo().getPrivateAssetNum() + "\n照片");
+            _uploadedButton.setText(_user.getAssetsInfo().getPublicAssetNum()  + "\n照片");
             _likedButton.setText(_user.getAssetsInfo().getLikedAssetNum() + "\n喜欢");
             _downloadedButton.setText(_user.getmwtFellowshipInfo().get_followingNum() + "\n关注"); // 原下载
             _sharedButton.setText(_user.getmwtFellowshipInfo().get_followerNum() + "\n粉丝");  //原分享

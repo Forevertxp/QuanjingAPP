@@ -24,6 +24,7 @@ import com.quanjing.weitu.app.common.MWTCallback;
 import com.quanjing.weitu.app.model.MWTNewCircle;
 import com.quanjing.weitu.app.model.MWTNewCircleManager;
 import com.quanjing.weitu.app.model.MWTRestManager;
+import com.quanjing.weitu.app.model.MWTRotation;
 import com.quanjing.weitu.app.model.MWTTalent;
 import com.quanjing.weitu.app.model.MWTTalentManager;
 import com.quanjing.weitu.app.protocol.MWTArticleData;
@@ -47,6 +48,8 @@ public class MWTFoundAdapter extends BaseAdapter {
     private List<MWTArticleData> articleList;
     private MWTAutoSlidingPagerView autoSlidingPagerView;
     private static int COUNT = 20;
+
+    private TopViewHolder topViewHolder = null;
 
     public MWTFoundAdapter(Context context) {
         super();
@@ -95,7 +98,6 @@ public class MWTFoundAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         ViewHolder holder = null;
-        TopViewHolder topViewHolder = null;
         if (getItemViewType(position) == PIC_ITEM) {
             if (convertView == null) {
                 convertView = View.inflate(context, R.layout.view_found_top, null);
@@ -105,18 +107,23 @@ public class MWTFoundAdapter extends BaseAdapter {
             } else {
                 topViewHolder = (TopViewHolder) convertView.getTag();
             }
-            ArrayList<String> imageIdList = new ArrayList<String>();
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/4.jpg");
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/5.jpg");
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/8.jpg");
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/7.jpg");
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/6.jpg");
-            imageIdList.add("http://zonepic.quanjing.com/app/dtRotation/2.jpg");
-            topViewHolder.autoSlidingPagerView.setAdapter(new ImagePagerAdapter(context, imageIdList));
-            topViewHolder.autoSlidingPagerView.setOnPageChangeListener(new MyOnPageChangeListener());
-            topViewHolder.autoSlidingPagerView.setInterval(4000);
-            topViewHolder.autoSlidingPagerView.setScrollDurationFactor(2.0);
-            topViewHolder.autoSlidingPagerView.startAutoScroll();
+            RotationLoader loader = new RotationLoader();
+
+            loader.loadRotation(new RotationLoader.RotationCallBack() {
+                @Override
+                public void success(ArrayList<MWTRotation> rotationArrayList) {
+                    ArrayList<String> imageIdList = new ArrayList<String>();
+                    for (MWTRotation rotation : rotationArrayList) {
+                        imageIdList.add(rotation.ImgUrl);
+                        topViewHolder.autoSlidingPagerView.setAdapter(new ImagePagerAdapter(context, imageIdList));
+                        topViewHolder.autoSlidingPagerView.setOnPageChangeListener(new MyOnPageChangeListener());
+                        topViewHolder.autoSlidingPagerView.setInterval(4000);
+                        topViewHolder.autoSlidingPagerView.setScrollDurationFactor(2.0);
+                        topViewHolder.autoSlidingPagerView.startAutoScroll();
+                    }
+                }
+            });
+
 
         } else {
             if (convertView == null) {

@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -64,43 +66,96 @@ public class BitmapCache extends Activity {
 		}
 		iv.setImageBitmap(null);
 
-		new Thread() {
-			Bitmap thumb;
+        getThreadPool().execute(new Runnable() {
+            Bitmap thumb;
+            @Override
+            public void run() {
+                try {
+                    if (isThumbPath) {
+                        thumb = BitmapFactory.decodeFile(thumbPath);
+                        if (thumb == null) {
+                            thumb = revitionImageSize(sourcePath);
+                        }
+                    } else {
+                        thumb = revitionImageSize(sourcePath);
+                    }
+                } catch (Exception e) {
 
-			public void run() {
+                }
+                if (thumb == null) {
+                    thumb = MWTUploadPicActivity.bimap;
+                }
+                Log.e(TAG, "-------thumb------"+thumb);
+                put(path, thumb);
 
-				try {
-					if (isThumbPath) {
-						thumb = BitmapFactory.decodeFile(thumbPath);
-						if (thumb == null) {
-							thumb = revitionImageSize(sourcePath);						
-						}						
-					} else {
-						thumb = revitionImageSize(sourcePath);											
-					}
-				} catch (Exception e) {	
-					
-				}
-				if (thumb == null) {
-					thumb = MWTUploadPicActivity.bimap;
-				}
-				Log.e(TAG, "-------thumb------"+thumb);
-				put(path, thumb);
+                if (callback != null) {
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.imageLoad(iv, thumb, sourcePath);
+                        }
+                    });
+                }
+            }
+        });
 
-				if (callback != null) {
-					h.post(new Runnable() {
-						@Override
-						public void run() {
-							callback.imageLoad(iv, thumb, sourcePath);
-						}
-					});
-				}
-			}
-		}.start();
+//        new Thread() {
+//			Bitmap thumb;
+//
+//			public void run() {
+//
+//				try {
+//					if (isThumbPath) {
+//						thumb = BitmapFactory.decodeFile(thumbPath);
+//						if (thumb == null) {
+//							thumb = revitionImageSize(sourcePath);
+//						}
+//					} else {
+//						thumb = revitionImageSize(sourcePath);
+//					}
+//				} catch (Exception e) {
+//
+//				}
+//				if (thumb == null) {
+//					thumb = MWTUploadPicActivity.bimap;
+//				}
+//				Log.e(TAG, "-------thumb------"+thumb);
+//				put(path, thumb);
+//
+//				if (callback != null) {
+//					h.post(new Runnable() {
+//						@Override
+//						public void run() {
+//							callback.imageLoad(iv, thumb, sourcePath);
+//						}
+//					});
+//				}
+//			}
+//		}.start();
 
 	}
 
-	public Bitmap revitionImageSize(String path) throws IOException {
+    private ExecutorService mImageThreadPool = null;
+
+    /**
+     * 获取线程池的方法，因为涉及到并发的问题，我们加上同步锁
+     * @return
+     */
+    public ExecutorService getThreadPool(){
+        if(mImageThreadPool == null){
+            synchronized(ExecutorService.class){
+                if(mImageThreadPool == null){
+                    //为了下载图片更加的流畅，我们用了50个线程来加载图片
+                    mImageThreadPool = Executors.newFixedThreadPool(25);
+                }
+            }
+        }
+
+        return mImageThreadPool;
+
+    }
+
+    public Bitmap revitionImageSize(String path) throws IOException {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(
 				new File(path)));
 		BitmapFactory.Options options = new BitmapFactory.Options();

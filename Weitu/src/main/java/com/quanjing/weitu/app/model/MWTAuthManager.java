@@ -214,6 +214,19 @@ public class MWTAuthManager
         save();
     }
 
+    public void logout(){
+        clearAccessToken();
+        try {
+            FileOutputStream fos = MWTConfig.getInstance().getContext().openFileOutput(
+                    AUTH_CONFIG_FILENAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(null);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void save()
     {
         try

@@ -9,6 +9,7 @@ public class MWTThemer
 
     private Typeface _wtFont;
     private Typeface _fakFont;
+    private Typeface _ionIcons;
 
     private int _actionBarForegroundColor;
     private int _actionBarBackgroundColor;
@@ -30,6 +31,7 @@ public class MWTThemer
     {
         _wtFont = Typeface.createFromAsset(context.getAssets(), "fonts/WTFont.ttf");
         _fakFont = Typeface.createFromAsset(context.getAssets(), "fonts/FontAwesome.ttf");
+        _ionIcons =  Typeface.createFromAsset(context.getAssets(), "fonts/ionIcons.ttf");
     }
 
     public Typeface getFAKFont()
@@ -40,6 +42,11 @@ public class MWTThemer
     public Typeface getWTFont()
     {
         return _wtFont;
+    }
+
+    public Typeface getIconFont()
+    {
+        return _ionIcons;
     }
 
     public int getActionBarForegroundColor()

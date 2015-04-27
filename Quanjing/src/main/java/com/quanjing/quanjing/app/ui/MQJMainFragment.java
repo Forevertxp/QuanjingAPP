@@ -5,29 +5,33 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
+import android.util.Base64;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.atermenji.android.iconicdroid.IconicFontDrawable;
 import com.atermenji.android.iconicdroid.icon.FontAwesomeIcon;
 import com.quanjing.quanjing.app.R;
 import com.quanjing.weitu.app.common.MWTThemer;
 import com.quanjing.weitu.app.model.MWTAuthManager;
-import com.quanjing.weitu.app.model.MWTUser;
-import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.ui.common.MWTTabBar;
 import com.quanjing.weitu.app.ui.settings.MWTSettingsActivity;
 import com.quanjing.weitu.app.ui.user.MWTAuthSelectActivity;
-import com.quanjing.weitu.app.ui.user.MWTUploadPicActivity;
-import com.quanjing.weitu.app.ui.user.MWTUserInfoEditActivity;
+
+import java.io.ByteArrayOutputStream;
 
 public class MQJMainFragment extends Fragment {
     private ViewPager _viewPager;
@@ -83,16 +87,18 @@ public class MQJMainFragment extends Fragment {
         _tabBar = (MWTTabBar) fragmentView.findViewById(R.id.TabBar);
 
         Typeface typeface = MWTThemer.getInstance().getWTFont();
+        Typeface iconface = MWTThemer.getInstance().getIconFont();
         _tabBar.getItemViewAt(0).setIconTextWithTypeface("\uf10d", typeface); // Alt Home Icon
         _tabBar.getItemViewAt(1).setIconTextWithTypeface("\uf10f", typeface); // Compass Icon
-        _tabBar.getItemViewAt(2).setIconTextWithTypeface("\uf110", typeface); // Alt Community Icon
-        //_tabBar.getItemViewAt(3).setIconTextWithTypeface("\uf10a", typeface); // Picture Icon
+        //_tabBar.getItemViewAt(2).setIconTextWithTypeface("\uf110", typeface); // Alt Community Icon
+        // 使用开源图片库
+        //_tabBar.getItemViewAt(3).setIconTextWithTypeface("\uf2fa", iconface); // Picture Icon
         _tabBar.getItemViewAt(3).setIconTextWithTypeface("\uf10e", typeface); // Alt User Icon
 
         _tabBar.getItemViewAt(0).setTitleText("全景");
         _tabBar.getItemViewAt(1).setTitleText("发现");
+       // _tabBar.getItemViewAt(2).setTitleText("美图");
         _tabBar.getItemViewAt(2).setTitleText("圈子");
-        //_tabBar.getItemViewAt(3).setTitleText("圈子");
         _tabBar.getItemViewAt(3).setTitleText("我");
 
         _tabBar.setOnTabSelectionEventListener(new MWTTabBar.OnTabSelectionEventListener() {
@@ -148,7 +154,7 @@ public class MQJMainFragment extends Fragment {
     }
 
     private boolean handleOnWillSelectTab(int tabIndex) {
-        if (tabIndex == 2 || tabIndex == 3|| tabIndex == 4) {
+        if (tabIndex == 2 || tabIndex == 3 || tabIndex == 4) {
             MWTAuthManager am = MWTAuthManager.getInstance();
             if (!am.isAuthenticated()) {
                 Intent intent = new Intent(getActivity(), MWTAuthSelectActivity.class);
@@ -183,6 +189,23 @@ public class MQJMainFragment extends Fragment {
         ImageView left = (ImageView) actionbarLayout.findViewById(com.quanjing.weitu.R.id.left_imbt);
         actionBar.setCustomView(actionbarLayout);
 
+        // 使用自定义图片
+        String imgStr = "circle";
+        ImageSpan normalSpan = new ImageSpan(getActivity(), R.drawable.ic_new_circle);
+        SpannableString normalStr = new SpannableString(imgStr);
+        normalStr.setSpan(normalSpan, 0, imgStr.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        ImageSpan selectedSpan = new ImageSpan(getActivity(), R.drawable.ic_new_circle_selected);
+        SpannableString selectedStr = new SpannableString(imgStr);
+        selectedStr.setSpan(selectedSpan, 0, imgStr.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+
+        Typeface typeface = MWTThemer.getInstance().getWTFont();
+        if (tabIndex == 2) {
+            _tabBar.getItemViewAt(2).setIconTextWithTypeface(selectedStr, typeface);
+        } else {
+            _tabBar.getItemViewAt(2).setIconTextWithTypeface(normalStr, typeface);
+        }
+
         switch (tabIndex) {
             case 0:
                 setActionBarVisible(false);
@@ -191,25 +214,25 @@ public class MQJMainFragment extends Fragment {
             case 1:
                 setActionBarVisible(true);
                 _viewPager.setCurrentItem(tabIndex, false);
-                title.setText("发 现");
+                title.setText("          发 现");
                 left.setVisibility(View.GONE);
                 break;
+//            case 2:
+//                setActionBarVisible(true);
+//                _viewPager.setCurrentItem(tabIndex, false);
+//                title.setText("          美 图");
+//                left.setVisibility(View.GONE);
+//                break;
             case 2:
                 setActionBarVisible(true);
                 _viewPager.setCurrentItem(tabIndex, false);
-                title.setText("圈 子");
+                title.setText("          圈 子");
                 left.setVisibility(View.GONE);
                 break;
-//            case 3:
-//                setActionBarVisible(true);
-//                _viewPager.setCurrentItem(tabIndex, false);
-//                title.setText("圈 子");
-//                left.setVisibility(View.GONE);
-//                break;
             case 3:
                 setActionBarVisible(true);
                 _viewPager.setCurrentItem(tabIndex, false);
-                title.setText("我");
+                title.setText("          我");
                 IconicFontDrawable iconDrawable = new IconicFontDrawable(getActivity());
                 iconDrawable.setIcon(FontAwesomeIcon.COG);
                 iconDrawable.setIconColor(MWTThemer.getInstance().getActionBarForegroundColor());

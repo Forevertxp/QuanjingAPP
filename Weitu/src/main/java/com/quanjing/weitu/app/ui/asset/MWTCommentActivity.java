@@ -4,12 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,10 +20,13 @@ import com.quanjing.weitu.app.model.MWTRestManager;
 import com.quanjing.weitu.app.model.MWTUser;
 import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.protocol.MWTCommentData;
+import com.quanjing.weitu.app.protocol.MWTUserData;
 import com.quanjing.weitu.app.protocol.service.MWTAddCommentResult;
 import com.quanjing.weitu.app.protocol.service.MWTCommentResult;
 import com.quanjing.weitu.app.protocol.service.MWTCommentService;
+import com.quanjing.weitu.app.ui.common.MWTBase2Activity;
 import com.quanjing.weitu.app.ui.common.MWTBaseActivity;
+import com.quanjing.weitu.app.ui.community.UserLoader;
 import com.quanjing.weitu.app.ui.community.square.XCRoundImageView;
 import com.squareup.picasso.Picasso;
 
@@ -32,7 +37,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MWTCommentActivity extends MWTBaseActivity {
+public class MWTCommentActivity extends MWTBase2Activity {
 
     private MWTCommentService commentService;
     private ListView commentList;
@@ -47,6 +52,7 @@ public class MWTCommentActivity extends MWTBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mwtcomment);
+        setTitleText("评论");
 
         initView();
 
@@ -94,6 +100,16 @@ public class MWTCommentActivity extends MWTBaseActivity {
                             InputMethodManager.HIDE_NOT_ALWAYS);
                 }
 
+            }
+        });
+
+        commentList.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(contentText.getWindowToken(), 0);
+                contentText.clearFocus();
+                return false;
             }
         });
 
@@ -171,22 +187,34 @@ public class MWTCommentActivity extends MWTBaseActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup viewGroup) {
-            ViewHolder holder;
-            holder = new ViewHolder();
+            final ViewHolder holder = new ViewHolder();
 
             convertView = View.inflate(context, R.layout.item_comment, null);
             holder.imageView = (XCRoundImageView) convertView.findViewById(R.id.iv_avatar);
             holder.textView = (TextView) convertView.findViewById(R.id.tv_title);
             holder.contentTextView = (TextView) convertView.findViewById(R.id.tv_content);
 
-            MWTCommentData commentData = commentDataList.get(position);
-            MWTUserManager userManager = MWTUserManager.getInstance();
-            MWTUser user = userManager.getUserByID(commentData.userID);
-            holder.textView.setText(user.getNickname());
-            holder.contentTextView.setText(commentData.content);
-            Picasso.with(context)
-                    .load(user.getAvatarImageInfo().url).resize(160, 120)
-                    .into(holder.imageView);
+            final MWTCommentData commentData = commentDataList.get(position);
+            MWTUser u = (MWTUserManager.getInstance().getUserByID(commentData.userID));
+            if (u != null) {
+                holder.textView.setText(u.getNickname());
+                holder.contentTextView.setText(commentData.content);
+                Picasso.with(context)
+                        .load(u.getAvatarImageInfo().url).resize(160, 120)
+                        .into(holder.imageView);
+            } else {
+                UserLoader userLoader = new UserLoader();
+                userLoader.fetchUserByID(commentData.userID, new UserLoader.UserCallBack() {
+                    @Override
+                    public void success(MWTUserData userData) {
+                        holder.textView.setText(userData.nickname);
+                        holder.contentTextView.setText(commentData.content);
+                        Picasso.with(context)
+                                .load(userData.avatarImageInfo.url).resize(160, 120)
+                                .into(holder.imageView);
+                    }
+                });
+            }
             return convertView;
         }
 

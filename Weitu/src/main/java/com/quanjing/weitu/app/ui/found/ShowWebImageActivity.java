@@ -38,9 +38,11 @@ import java.io.IOException;
 
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-public class ShowWebImageActivity extends Activity {
+public class ShowWebImageActivity extends MWTBase2Activity {
     private TextView imageTextView = null;
     private String imagePath = null;
+    private String caption = null;
+    private String webUrl = null;
     private ZoomableImageView imageView = null;
 
     private ImageView back, share, download;
@@ -51,6 +53,8 @@ public class ShowWebImageActivity extends Activity {
         setContentView(R.layout.activity_content_showimage);
         getActionBar().hide();
         this.imagePath = getIntent().getStringExtra("image");
+        this.caption = getIntent().getStringExtra("caption");
+        this.webUrl = getIntent().getStringExtra("webUrl");
 
         this.imageTextView = (TextView) findViewById(R.id.show_webimage_imagepath_textview);
         imageTextView.setText(this.imagePath);
@@ -220,25 +224,6 @@ public class ShowWebImageActivity extends Activity {
 
     private void performShare(final String imageURL) {
         MWTAuthManager am = MWTAuthManager.getInstance();
-        if (!am.isAuthenticated()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("请登录")
-                    .setMessage("请在登录后使用分享功能")
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(ShowWebImageActivity.this, MWTAuthSelectActivity.class);
-                            ShowWebImageActivity.this.startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // do nothing
-                        }
-                    })
-                    .show();
-            return;
-        }
-
 
         SVProgressHUD.showInView(ShowWebImageActivity.this, "分享中，请稍候...", true);
 
@@ -270,8 +255,19 @@ public class ShowWebImageActivity extends Activity {
                             String appName = getApplicationInfo().name;
                             oks.setNotification(0, appName);
 
+                            if (caption != null && !caption.equals("")) {
+                                oks.setTitle(caption);
+                            } else {
+                                oks.setTitle("全景网");
+                            }
+
                             oks.setImagePath(outputFilePath);
-                            oks.setUrl("http://www.quanjing.com");
+                            if (webUrl != null && !webUrl.equals("")) {
+                                if (webUrl.indexOf("zone.quanjing.com") == -1) {
+                                    oks.setUrl(webUrl);
+                                }
+                            }
+
                             oks.setSilent(false);
 
                             // 令编辑页面显示为Dialog模式

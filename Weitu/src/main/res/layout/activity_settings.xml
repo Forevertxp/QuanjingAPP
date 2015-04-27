@@ -1,79 +1,141 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.quanjing.weitu.app.ui.settings.MWTSettingsActivity">
+<com.quanjing.weitu.app.common.MWTOverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DDDDDD"
+    tools:context="com.quanjing.weitu.app.ui.settings.MWTSettingsActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="#EEEEEE">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:text="帮助"
-            style="@style/ManualSectionHeaderTextViewStyle"/>
-
-        <LinearLayout style="@style/SectionAreaStyle">
-
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
-
-            <Button
-                android:id="@+id/LicenseButton"
-                android:text="使用条款"
-                style="@style/ManualSectionItemButtonStyle"/>
-
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
-
-        </LinearLayout>
-
-
-        <TextView
-            android:text="关于"
-            style="@style/ManualSectionHeaderTextViewStyle"/>
-
-        <LinearLayout style="@style/SectionAreaStyle">
-
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#EEEEEE">
 
             <TextView
-                android:id="@+id/VersionTextView"
-                android:text="全景微图 v1.0"
-                style="@style/ManualSectionItemButtonStyle"/>
+                android:text="找朋友"
+                style="@style/ManualSectionHeaderTextViewStyle" />
 
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <Button
+                    android:id="@+id/FriendButton"
+                    android:text="邀请好友"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+            </LinearLayout>
+
+            <TextView
+                android:text="图片"
+                style="@style/ManualSectionHeaderTextViewStyle" />
+
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <Button
+                    android:id="@+id/LikeButton"
+                    android:text="喜欢的图片"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <Button
+                    android:id="@+id/CommentButton"
+                    android:text="评论的图片"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+            </LinearLayout>
+
+            <TextView
+                android:text="帮助"
+                style="@style/ManualSectionHeaderTextViewStyle" />
+
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <Button
+                    android:id="@+id/LicenseButton"
+                    android:text="使用条款"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:text="关于"
+                style="@style/ManualSectionHeaderTextViewStyle" />
+
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <TextView
+                    android:id="@+id/VersionTextView"
+                    android:text="全景微图 v1.6"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+            </LinearLayout>
+
+            <TextView
+                android:text="账户"
+                style="@style/ManualSectionHeaderTextViewStyle" />
+
+            <LinearLayout style="@style/SectionAreaStyle">
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+                <Button
+                    android:id="@+id/LogoutButton"
+                    android:text="退出当前用户登录"
+                    style="@style/ManualSectionItemButtonStyle" />
+
+                <View
+                    android:background="@color/DarkDividerLineColor"
+                    style="@style/horizontal_line_1px" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:text="账户"
-            style="@style/ManualSectionHeaderTextViewStyle"/>
+    </RelativeLayout>
+</com.quanjing.weitu.app.common.MWTOverScrollView>
 
-        <LinearLayout style="@style/SectionAreaStyle">
-
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
-
-            <Button
-                android:id="@+id/LogoutButton"
-                android:text="退出当前用户登录"
-                style="@style/ManualSectionItemButtonStyle"/>
-
-            <View
-                android:background="@color/DarkDividerLineColor"
-                style="@style/horizontal_line_1px"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</RelativeLayout>

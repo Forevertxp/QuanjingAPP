@@ -140,24 +140,24 @@ public class SVProgressHUD {
 		}
 		// TN对象中获得了show方法
 		Method method =  obj.getClass().getDeclaredMethod("show", null);
-		// 调用show方法来显示Toast信息提示框
-		method.invoke(obj, null);
-	}
-	private static void hideByHackToast(Context context, View v) throws Exception
-	{
-		if (static_toast != null) {
-			//  从Toast对象中获得mTN变量
-			Field field = static_toast.getClass().getDeclaredField("mTN");
-			field.setAccessible(true);
-			Object obj = field.get(static_toast);
-			// TN对象中获得了show方法
-			Method method =  obj.getClass().getDeclaredMethod("hide", null);
-			// 调用show方法来显示Toast信息提示框
-			method.invoke(obj, null);
-		}
-	}
-	private static void showByUsingNormalMethod(Context context, View v)
-	{
+        // 调用show方法来显示Toast信息提示框
+        method.invoke(obj, null);
+    }
+    private static void hideByHackToast(Context context, View v) throws Exception
+    {
+        if (static_toast != null) {
+            //  从Toast对象中获得mTN变量
+            Field field = static_toast.getClass().getDeclaredField("mTN");
+            field.setAccessible(true);
+            Object obj = field.get(static_toast);
+            // TN对象中获得了show方法
+            Method method =  obj.getClass().getDeclaredMethod("hide", null);
+            // 调用show方法来显示Toast信息提示框
+            method.invoke(obj, null);
+        }
+    }
+    private static void showByUsingNormalMethod(Context context, View v)
+    {
 		WindowManager.LayoutParams params;
 		{
 			params = new WindowManager.LayoutParams();

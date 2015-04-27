@@ -2,20 +2,39 @@ package com.quanjing.weitu.app.ui.circle;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.quanjing.weitu.R;
 import com.quanjing.weitu.app.common.MWTCallback;
 import com.quanjing.weitu.app.model.MWTAsset;
+import com.quanjing.weitu.app.model.MWTCircleLike;
+import com.quanjing.weitu.app.model.MWTLabel;
 import com.quanjing.weitu.app.model.MWTNewCircle;
 import com.quanjing.weitu.app.model.MWTNewCircleManager;
 import com.quanjing.weitu.app.model.MWTRestManager;
@@ -27,6 +46,7 @@ import com.quanjing.weitu.app.protocol.MWTError;
 import com.quanjing.weitu.app.protocol.service.MWTAddCommentResult;
 import com.quanjing.weitu.app.protocol.service.MWTCircleService;
 import com.quanjing.weitu.app.protocol.service.MWTCommentService;
+import com.quanjing.weitu.app.protocol.service.MWTCricleLikeResult;
 import com.quanjing.weitu.app.ui.asset.MWTAssetActivity;
 import com.quanjing.weitu.app.ui.common.ActionItem;
 import com.quanjing.weitu.app.ui.common.MWTPopup;
@@ -36,6 +56,9 @@ import com.quanjing.weitu.app.ui.community.recommend.NoScrollGridView;
 import com.quanjing.weitu.app.ui.community.square.XCRoundImageView;
 import com.quanjing.weitu.app.ui.user.MWTOtherUserActivity;
 import com.squareup.picasso.Picasso;
+
+import org.lcsky.SVProgressHUD;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +78,7 @@ public class NewCircleAdapter extends BaseAdapter {
     private List<MWTNewCircle> circleList;
     private MWTPopup titlePopup;
     private int tempPosition;
-    ;
+    private String praise = "赞";
 
     public NewCircleAdapter(Context context) {
         super();
@@ -90,7 +113,9 @@ public class NewCircleAdapter extends BaseAdapter {
             holder.gridview = (NoScrollGridView) convertView.findViewById(R.id.gridview);
             holder.tv_time = (TextView) convertView.findViewById(R.id.timeText);
             holder.iv_comment = (ImageView) convertView.findViewById(R.id.commentText);
+            holder.tv_like = (TextView) convertView.findViewById(R.id.likeText);
             holder.lv_comment = (ListView) convertView.findViewById(R.id.commentList);
+            holder.likeRL = (RelativeLayout) convertView.findViewById(R.id.likeRL);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -139,10 +164,57 @@ public class NewCircleAdapter extends BaseAdapter {
             holder.gridview.setAdapter(new NoScrollGridAdapter(context, assets));
         }
 
-        CommentAdapter adapter = new CommentAdapter(context, circleItem.getCircleComments());
+        if (circleItem.getCircleLikes().size() > 0) {
+            holder.likeRL.setVisibility(View.VISIBLE);
+            StringBuilder actionText = new StringBuilder();
+            for (int i = 0; i < circleItem.getCircleLikes().size(); i++) {
+                MWTCircleLike like = circleItem.getCircleLikes().get(i);
+                MWTUser likeUser = MWTUserManager.getInstance().getUserByID(like.getLikeUserid());
+                if (likeUser != null) {
+                    String nickName = "";
+                    if (i == circleItem.getCircleLikes().size() - 1)
+                        nickName = " " + likeUser.getNickname();
+                    else
+                        nickName = " " + likeUser.getNickname() + " , ";
+                    actionText
+                            .append("<a style=\"text-decoration:none;\" href='" + likeUser.getUserID() + "'>"
+                                    + nickName + " </a>");
+                }
+            }
+            holder.tv_like.setText(Html.fromHtml(actionText.toString()));
+            holder.tv_like.setMovementMethod(LinkMovementMethod
+                    .getInstance());
+            CharSequence text = holder.tv_like.getText();
+            int ends = text.length();
+            Spannable spannable = (Spannable) holder.tv_like.getText();
+            URLSpan[] urlspan = spannable.getSpans(0, ends, URLSpan.class);
+            SpannableStringBuilder stylesBuilder = new SpannableStringBuilder(text);
+            stylesBuilder.clearSpans(); // should clear old spans
+            for (URLSpan url : urlspan) {
+                TextViewURLSpan myURLSpan = new TextViewURLSpan(url.getURL());
+                stylesBuilder.setSpan(myURLSpan, spannable.getSpanStart(url),
+                        spannable.getSpanEnd(url), spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            holder.tv_like.setText(stylesBuilder);
+        } else {
+            holder.likeRL.setVisibility(View.GONE);
+        }
+
+        final CommentAdapter adapter = new CommentAdapter(context, circleItem.getCircleComments());
         holder.lv_comment.setDivider(null);
         holder.lv_comment.setAdapter(adapter);
         setListViewHeightBasedOnChildren(holder.lv_comment);
+        holder.lv_comment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MWTCircleComment circleComment = (MWTCircleComment) adapter.getItem(i);
+                Intent intent = new Intent("com.quanjing.sendComment");
+                intent.putExtra("activityId", circleComment.getActivityId());
+                intent.putExtra("replyuserid", circleComment.getUserid());
+                intent.putExtra("position", position);
+                context.sendBroadcast(intent);
+            }
+        });
 
         // 点击回帖九宫格，查看大图
         holder.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -163,33 +235,126 @@ public class NewCircleAdapter extends BaseAdapter {
         holder.iv_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                titlePopup = new MWTPopup(context, Utils.dip2px(context, 165), Utils.dip2px(context, 40));
+                praise = "赞";
+                for (MWTCircleLike liker : circleItem.getCircleLikes()) {
+                    if (liker.getLikeUserid().equals(MWTUserManager.getInstance().getCurrentUser().getUserID())) {
+                        praise = "取消";
+                    }
+                }
+                titlePopup.addAction(new ActionItem(context, praise, R.drawable.circle_praise));
+                titlePopup.addAction(new ActionItem(context, "评论", R.drawable.circle_comment));
+                titlePopup.setItemOnClickListener(new MWTPopup.OnItemOnClickListener() {
+                    @Override
+                    public void onItemClick(ActionItem item, int position) {
+                        if (!isNetworkConnected(context)) {
+                            SVProgressHUD.showInViewWithoutIndicator(context, "网络连接失败", 2.0f);
+                            return;
+                        }
+                        switch (position) {
+                            case 0://赞
+                                addLikeToActivity(circleList.get(tempPosition).getActivityID());
+                                if (praise.equals("赞")) { //赞
+                                    MWTCircleLike like = new MWTCircleLike();
+                                    like.setActivityid(circleList.get(tempPosition).getActivityID());
+                                    like.setLikeUserid(MWTUserManager.getInstance().getCurrentUser().getUserID());
+                                    circleList.get(tempPosition).getCircleLikes().add(like);
+                                    notifyDataSetChanged();
+                                } else if (praise.equals("取消")) { //取消赞
+                                    for (MWTCircleLike like : circleList.get(tempPosition).getCircleLikes()) {
+                                        if (like.getActivityid().equals(circleList.get(tempPosition).getActivityID()) && like.getLikeUserid().equals((MWTUserManager.getInstance().getCurrentUser().getUserID()))) {
+                                            circleList.get(tempPosition).getCircleLikes().remove(like);
+                                            break;
+                                        }
+                                    }
+                                    notifyDataSetChanged();
+                                }
+                                break;
+                            case 1://评论
+                                Intent intent = new Intent("com.quanjing.sendComment");
+                                intent.putExtra("position", tempPosition);
+                                intent.putExtra("activityId", circleList.get(tempPosition).getActivityID());
+                                context.sendBroadcast(intent);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+
                 Integer positon = (Integer) view.getTag();
                 tempPosition = position;
                 titlePopup.setAnimationStyle(R.style.cricleBottomAnimation);
                 titlePopup.show(view);
             }
         });
-        titlePopup = new MWTPopup(context, Utils.dip2px(context, 165), Utils.dip2px(context, 40));
-        titlePopup.addAction(new ActionItem(context, "赞", R.drawable.circle_praise));
-        titlePopup.addAction(new ActionItem(context, "评论", R.drawable.circle_comment));
-        titlePopup.setItemOnClickListener(new MWTPopup.OnItemOnClickListener() {
-            @Override
-            public void onItemClick(ActionItem item, int position) {
-                switch (position) {
-                    case 0://赞
-                        break;
-                    case 1://评论
-//                        EditText disInputText = (EditText)findViewById(R.id.group_discuss);
-//                        disInputText.requestFocus();
-                        addComment(circleList.get(tempPosition).getActivityID(), circleList.get(tempPosition).getActivityID());
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
 
         return convertView;
+    }
+
+    private class TextViewURLSpan extends ClickableSpan {
+        private String clickString;
+
+        public TextViewURLSpan(String clickString) {
+            this.clickString = clickString;
+        }
+
+        @Override
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(context.getResources().getColor(R.color.common_blue));
+            ds.setUnderlineText(false); //去掉下划线
+        }
+
+        @Override
+        public void onClick(View widget) {
+            Intent intent = new Intent(context, MWTOtherUserActivity.class);
+            intent.putExtra("userID", clickString);
+            context.startActivity(intent);
+        }
+    }
+
+    private void addLikeToActivity(String activityId) {
+        MWTRestManager restManager = MWTRestManager.getInstance();
+        MWTCircleService circleService = restManager.create(MWTCircleService.class);
+        circleService.addLikeToActivity(activityId, new Callback<MWTCricleLikeResult>() {
+            @Override
+            public void success(MWTCricleLikeResult result, Response response) {
+                if (result.error != null) {
+                    return;
+                }
+//                if (result.success.equals("1")) { //赞
+//                    MWTCircleLike like = new MWTCircleLike();
+//                    like.setActivityid(circleList.get(tempPosition).getActivityID());
+//                    like.setLikeUserid(MWTUserManager.getInstance().getCurrentUser().getUserID());
+//                    circleList.get(tempPosition).getCircleLikes().add(like);
+//                    notifyDataSetChanged();
+//                } else if (result.success.equals("2")) { //取消赞
+//                    for (MWTCircleLike like : circleList.get(tempPosition).getCircleLikes()) {
+//                        if (like.getActivityid().equals(circleList.get(tempPosition).getActivityID()) && like.getLikeUserid().equals((MWTUserManager.getInstance().getCurrentUser().getUserID()))) {
+//                            circleList.get(tempPosition).getCircleLikes().remove(like);
+//                            break;
+//                        }
+//                    }
+//                    notifyDataSetChanged();
+//                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Toast.makeText(context, "点赞失败！", 1).show();
+            }
+        });
+    }
+
+    protected void updateView(String commentText, String replyuserid, String activityId, int position) {
+        MWTCircleComment comment = new MWTCircleComment();
+        comment.setContent(commentText);
+        comment.setReplyuserid(replyuserid);
+        comment.setActivityId(activityId);
+        comment.setUserid(MWTUserManager.getInstance().getCurrentUser().getUserID());
+        int temp = position == 0 ? tempPosition : position;
+        circleList.get(temp).getCircleComments().add(comment);
+        notifyDataSetChanged();
     }
 
     private String convert2String(long time) {
@@ -203,33 +368,6 @@ public class NewCircleAdapter extends BaseAdapter {
         else
             return (currentTime - time) / 86400 + "天前";
 
-    }
-
-
-    private void addComment(String activityID, String content) {
-        MWTRestManager restManager = MWTRestManager.getInstance();
-        MWTCircleService circleService = restManager.create(MWTCircleService.class);
-        circleService.addCommentToActivity(activityID, "", content, new Callback<MWTAddCommentResult>() {
-            @Override
-            public void success(MWTAddCommentResult result, Response response) {
-                if (result.error != null) {
-                    return;
-                }
-                if (result != null) {
-                    MWTCircleComment comment = new MWTCircleComment();
-                    comment.setContent(circleList.get(tempPosition).getActivityID());
-                    comment.setActivityId(circleList.get(tempPosition).getActivityID());
-                    comment.setUserid(MWTUserManager.getInstance().getCurrentUser().getUserID());
-                    circleList.get(tempPosition).getCircleComments().add(0, comment);
-                    notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(context, "获取数据错误", 1).show();
-            }
-        });
     }
 
     /**
@@ -342,6 +480,8 @@ public class NewCircleAdapter extends BaseAdapter {
         private TextView tv_time;
         private ImageView iv_comment;
         private ListView lv_comment;
+        private TextView tv_like;
+        private RelativeLayout likeRL;
     }
 
     private class CommentAdapter extends BaseAdapter {
@@ -379,11 +519,36 @@ public class NewCircleAdapter extends BaseAdapter {
             holder.getterTV = (TextView) convertView.findViewById(R.id.tv_getter);
             holder.contentTextView = (TextView) convertView.findViewById(R.id.tv_content);
 
-            MWTCircleComment commentData = commentDataList.get(position);
+            final MWTCircleComment commentData = commentDataList.get(position);
             MWTUserManager userManager = MWTUserManager.getInstance();
             MWTUser user = userManager.getUserByID(commentData.getUserid());
             holder.senderTV.setText(user.getNickname());
-            holder.getterTV.setText(":");
+            holder.senderTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, MWTOtherUserActivity.class);
+                    intent.putExtra("userID", commentData.getUserid());
+                    context.startActivity(intent);
+                }
+            });
+            if (commentData.getReplyuserid() != null && !commentData.getReplyuserid().equals("0") && !user.getUserID().equals(commentData.getReplyuserid())) {
+                MWTUser likeUser = MWTUserManager.getInstance().getUserByID(commentData.getReplyuserid());
+                if (likeUser != null) {
+                    SpannableString ss = new SpannableString("回复 " + likeUser.getNickname() + ":");
+                    ss.setSpan(new ForegroundColorSpan(Color.rgb(0, 144, 255)), 3, 3 + likeUser.getNickname().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    holder.getterTV.setText(ss);
+                    holder.getterTV.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, MWTOtherUserActivity.class);
+                            intent.putExtra("userID", commentData.getReplyuserid());
+                            context.startActivity(intent);
+                        }
+                    });
+                }
+            } else {
+                holder.getterTV.setText(":");
+            }
             holder.contentTextView.setText(commentData.getContent());
             return convertView;
         }
@@ -425,6 +590,19 @@ public class NewCircleAdapter extends BaseAdapter {
         params.height = (totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1)));
         listView.setLayoutParams(params);
         listView.requestLayout();
+    }
+
+
+    public boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
     }
 }
 

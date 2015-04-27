@@ -6,6 +6,9 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MenuItem;
+import android.view.Window;
+
+import com.quanjing.weitu.R;
 import com.umeng.analytics.MobclickAgent;
 
 public class MWTBaseActivity extends FragmentActivity
@@ -27,6 +30,9 @@ public class MWTBaseActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        setTheme(R.style.AppTheme);
 
         applyUpButtonState();
     }

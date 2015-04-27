@@ -211,6 +211,11 @@ public class MWTUserHeaderView extends FrameLayout {
         }
     }
 
+    public void updateLocalImageCount(int n) {
+
+        _localButton.setText(String.valueOf(dataList.size() - n) + "\n本机");
+    }
+
     private void updateTextViews() {
         if (_user != null) {
             _nicknameTextView.setVisibility(View.VISIBLE);

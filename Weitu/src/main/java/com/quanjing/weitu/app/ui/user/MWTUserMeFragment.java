@@ -1,20 +1,16 @@
 package com.quanjing.weitu.app.ui.user;
 
-import android.app.ActionBar;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,23 +21,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.atermenji.android.iconicdroid.IconicFontDrawable;
 import com.atermenji.android.iconicdroid.icon.FontAwesomeIcon;
 import com.etsy.android.grid.StaggeredGridView;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshStaggeredGridView;
 import com.quanjing.weitu.R;
 import com.quanjing.weitu.app.common.MWTCallback;
 import com.quanjing.weitu.app.common.MWTThemer;
@@ -52,24 +41,20 @@ import com.quanjing.weitu.app.model.MWTUserAssetsInfo;
 import com.quanjing.weitu.app.model.MWTUserManager;
 import com.quanjing.weitu.app.protocol.MWTError;
 import com.quanjing.weitu.app.ui.asset.MWTAssetActivity;
-import com.quanjing.weitu.app.ui.beauty.NoScrollGridView;
 import com.quanjing.weitu.app.ui.common.MWTBaseSearchActivity;
-import com.quanjing.weitu.app.ui.common.MWTListAssetsAdapter;
 import com.quanjing.weitu.app.ui.common.MWTPageFragment;
+import com.quanjing.weitu.app.ui.found.ImagePagerActivity;
 import com.quanjing.weitu.app.ui.photo.AlbumActivity;
 import com.quanjing.weitu.app.ui.photo.AlbumHelper;
 import com.quanjing.weitu.app.ui.photo.Bimp;
-import com.quanjing.weitu.app.ui.photo.BitmapCache;
-import com.quanjing.weitu.app.ui.photo.FileUtils;
-import com.quanjing.weitu.app.ui.photo.GalleryActivity;
 import com.quanjing.weitu.app.ui.photo.ImageBucket;
 import com.quanjing.weitu.app.ui.photo.ImageItem;
-import com.quanjing.weitu.app.ui.photo.PublicWay;
-import com.quanjing.weitu.app.ui.settings.MWTSettingsActivity;
+import com.quanjing.weitu.app.ui.photo.PictureUtil;
 
 import org.lcsky.SVProgressHUD;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -79,16 +64,15 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
     private final static int MENU_PHOTO = 0x9999;
     private final static int EDIT_USER_INFO = 0x123123;
 
-    private PullToRefreshStaggeredGridView _pullToRefreshStaggeredGridView;
-    private StaggeredGridView _gridView;
+    private final static int EDIT_IMAGE = 0x8888;
+
     private MWTUserHeaderView _headerView;
-    private MWTListAssetsAdapter _gridViewAdapter;
     private EContentMode _contentMode = EContentMode.nContentModeNone;
 
     private MenuItem photoMenuItem;
 
     //显示手机里的所有图片的列表控件
-    private NoScrollGridView gridView;
+    private HeaderGridView gridView;
     //gridView的adapter
     private LocalAlbumAdapter gridImageAdapter;
     private Intent intent;
@@ -98,6 +82,12 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
 
     private PopupWindow pop = null;
     private LinearLayout ll_popup;
+    // private PullToRefreshScrollView scrollView;
+
+    String localTempImgDir = "com.quanjing";
+    String localTempImgFileName = "quanjing_temp.jpg";
+
+    private static boolean isVisible = false;
 
     public MWTUserMeFragment() {
         // Required empty public constructor
@@ -121,37 +111,23 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_me, container, false);
 
-        _pullToRefreshStaggeredGridView = (PullToRefreshStaggeredGridView) view.findViewById(R.id.GridView);
-        _pullToRefreshStaggeredGridView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<StaggeredGridView>() {
-            @Override
-            public void onPullDownToRefresh(final PullToRefreshBase<StaggeredGridView> refreshView) {
-                performRefresh();
-            }
+//        scrollView = (PullToRefreshScrollView) view.findViewById(R.id.mainScollView);
+//        scrollView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ScrollView>() {
+//
+//            @Override
+//            public void onRefresh(PullToRefreshBase<ScrollView> refreshView) {
+//                reloadFromUser();
+//            }
+//        });
 
-            @Override
-            public void onPullUpToRefresh(final PullToRefreshBase<StaggeredGridView> refreshView) {
-                performLoadMore();
-            }
-        });
-        _pullToRefreshStaggeredGridView.setMode(PullToRefreshBase.Mode.BOTH);
 
-        _gridView = (StaggeredGridView) _pullToRefreshStaggeredGridView.getRefreshableView();
-        _gridView.setOnItemClickListener(this);
-
+        gridView = (HeaderGridView) view.findViewById(R.id.locaImageGrid);
         _headerView = new MWTUserHeaderView(this);
-        _gridView.addHeaderView(_headerView);
-
-        _gridViewAdapter = new MWTListAssetsAdapter(getActivity());
-        _gridView.setAdapter(_gridViewAdapter);
-
-        // 初始化数据
-//        onUploadedButtonClicked();
-
-        gridView = (NoScrollGridView) view.findViewById(R.id.locaImageGrid);
-        FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.headerFrame);
-        frameLayout.addView(_headerView);
-        init(); //本地相册
+        gridView.addHeaderView(_headerView);
         initPop();
+        init(); //本地相册
+        IntentFilter filter = new IntentFilter("picture.broadcast.delete");
+        getActivity().registerReceiver(broadcastReceiver, filter);
         return view;
     }
 
@@ -172,15 +148,20 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         DateHighToLowComparator comparator = new DateHighToLowComparator();
         Collections.sort(dataList, comparator);
 
-        gridImageAdapter = new LocalAlbumAdapter(getActivity(), dataList);
+        gridImageAdapter = new LocalAlbumAdapter(getActivity(), dataList, gridView);
         gridView.setAdapter(gridImageAdapter);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ImageItem imageItem = (ImageItem) gridImageAdapter.getItem(i);
-                Intent editorIntent = new Intent(getActivity(), ImageEditorActivity.class);
-                editorIntent.putExtra("imgUrl", imageItem.getImagePath());
-                startActivity(editorIntent);
+                ArrayList<String> imgList = new ArrayList<String>();
+                ArrayList<String> webList = new ArrayList<String>();
+                ArrayList<String> captionList = new ArrayList<String>();
+                Intent intent = new Intent(getActivity(), LocalImageBrowerActivity.class);
+                LocalImageBrowerActivity.imageItems = dataList;
+                intent.putExtra(LocalImageBrowerActivity.EXTRA_IMAGE_INDEX, i - 4);
+                intent.putExtra(LocalImageBrowerActivity.FROM_TYPE, 1);
+                startActivityForResult(intent, EDIT_IMAGE);
             }
         });
     }
@@ -237,6 +218,7 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         });
         bt1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Bimp.tempSelectBitmap.clear();
                 photo();
                 pop.dismiss();
                 ll_popup.clearAnimation();
@@ -246,7 +228,8 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
             public void onClick(View v) {
                 Bimp.tempSelectBitmap.clear();
                 Intent intent = new Intent(getActivity(),
-                        AlbumActivity.class);
+                        LocalAlbumActivity.class);
+                intent.putExtra("title","发布图片");
                 startActivity(intent);
                 pop.dismiss();
                 ll_popup.clearAnimation();
@@ -264,6 +247,10 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
 
     public void photo() {
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // 默认是压缩后的图，创建原图，如果不加下面两行代码，则在onActivityResult可直接通过(Bitmap) data.getExtras().get("data"); 获得压缩后的bitmap
+        Uri imageUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory()
+                + "/" + localTempImgDir + "/" + localTempImgFileName));
+        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
     }
 
@@ -321,7 +308,10 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         if (isVisibleToUser) {
             _headerView.setFocusable(true);
             _headerView.setFocusableInTouchMode(true);
+            isVisible = true;
             reloadFromUser();
+        } else {
+            isVisible = false;
         }
     }
 
@@ -331,11 +321,15 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         reloadFromUser();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
     public void reloadFromUser() {
         if (!MWTAuthManager.getInstance().isAuthenticated()) {
-            _gridView.setVisibility(View.INVISIBLE);
             _headerView.setUser(null);
-            _gridViewAdapter.notifyDataSetInvalidated();
             syncGridViewAdapterData();
             return;
         }
@@ -343,44 +337,46 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         MWTUser user = MWTUserManager.getInstance().getCurrentUser();
 
         if (user == null) {
-            _gridView.setVisibility(View.INVISIBLE);
-            SVProgressHUD.showInView(getActivity(), "获取用户信息中...", true);
+            if (isVisible)
+                SVProgressHUD.showInView(getActivity(), "获取用户信息中...", true);
             MWTUserManager.getInstance().refreshCurrentUserInfo(new MWTCallback() {
                 @Override
                 public void success() {
                     SVProgressHUD.dismiss(getActivity());
+                    //scrollView.onRefreshComplete();
                     reloadFromUser();
                 }
 
                 @Override
                 public void failure(MWTError error) {
                     SVProgressHUD.showInViewWithoutIndicator(getActivity(), error.getMessageWithPrompt("获取用户信息失败"), 3.f);
+                    // scrollView.onRefreshComplete();
                 }
             });
         } else if (user.checkAndCleanDataDirty()) {
-            _gridView.setVisibility(View.VISIBLE);
             _headerView.setUser(user);
-            _gridViewAdapter.notifyDataSetChanged();
             syncGridViewAdapterData();
 
-            SVProgressHUD.showInView(getActivity(), "获取用户信息中...", true);
+            if (isVisible)
+                SVProgressHUD.showInView(getActivity(), "获取用户信息中...", true);
             MWTUserManager.getInstance().refreshCurrentUserInfo(new MWTCallback() {
                 @Override
                 public void success() {
                     SVProgressHUD.dismiss(getActivity());
+                    //scrollView.onRefreshComplete();
                     reloadFromUser();
                 }
 
                 @Override
                 public void failure(MWTError error) {
                     SVProgressHUD.showInViewWithoutIndicator(getActivity(), error.getMessageWithPrompt("获取用户信息失败"), 3.f);
+                    // scrollView.onRefreshComplete();
                 }
             });
         } else {
-            _gridView.setVisibility(View.VISIBLE);
             _headerView.setUser(user);
-            _gridViewAdapter.notifyDataSetChanged();
             syncGridViewAdapterData();
+            // scrollView.onRefreshComplete();
         }
     }
 
@@ -393,6 +389,15 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         }
     }
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ArrayList<Integer> positionList = intent.getIntegerArrayListExtra("positionList");
+            updateLocaImage(positionList);
+        }
+    };
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDIT_USER_INFO && resultCode == Activity.RESULT_OK) {
@@ -402,18 +407,36 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         }
 
         if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
-
-            String fileName = String.valueOf(System.currentTimeMillis());
-            Bitmap bm = (Bitmap) data.getExtras().get("data");
-            FileUtils.saveBitmap(bm, fileName);
-
-            ImageItem takePhoto = new ImageItem();
-            takePhoto.setImagePath(FileUtils.SDPATH + fileName + ".jpg");
-            takePhoto.setBitmap(bm);
-            Bimp.tempSelectBitmap.add(takePhoto);
+            final String path = Environment.getExternalStorageDirectory()
+                    + "/" + localTempImgDir + "/" + localTempImgFileName;
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ImageItem takePhoto = new ImageItem();
+                    takePhoto.setImagePath(path);
+                    takePhoto.setBitmap(PictureUtil.getSmallBitmap(path));
+                    Bimp.tempSelectBitmap.add(takePhoto);
+                }
+            });
+            thread.start();
 
             Intent intent = new Intent(getActivity(), MWTUploadPicActivity.class);
             startActivity(intent);
+        }
+
+        if (requestCode == EDIT_IMAGE && resultCode == Activity.RESULT_OK) {
+            ArrayList<Integer> positionList = data.getIntegerArrayListExtra("positionList");
+            updateLocaImage(positionList);
+        }
+    }
+
+    private void updateLocaImage(ArrayList<Integer> positionList) {
+        if (positionList.size() > 0) {
+            for (int postion : positionList) {
+                dataList.remove(postion);
+            }
+            gridImageAdapter.notifyDataSetChanged();
+            _headerView.updateLocalImageCount(positionList.size());
         }
     }
 
@@ -460,7 +483,8 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         List<MWTAsset> assets = null;
         MWTUserAssetsInfo assetsInfo = user.getAssetsInfo();
         if (assetsInfo == null) {
-            SVProgressHUD.showInView(getActivity(), "获取用户数据中...", true);
+            if (isVisible)
+                SVProgressHUD.showInView(getActivity(), "获取用户数据中...", true);
             user.refreshPublicInfo(new MWTCallback() {
                 @Override
                 public void success() {
@@ -470,13 +494,11 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
 
                 @Override
                 public void failure(MWTError error) {
-                    _gridViewAdapter.setAssets(null);
                 }
             });
         } else {
             switch (_contentMode) {
                 case nContentModeNone:
-                    _gridViewAdapter.setAssets(null);
                     return;
                 case nContentModeLocalAssets:
                     break;
@@ -499,7 +521,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                     break;
             }
 
-            _gridViewAdapter.setAssets(assets);
             if (assets == null) {
                 manualRefresh();
             }
@@ -525,20 +546,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
         });
     }
 
-    private void performLoadMore() {
-        loadMoreForCurrentContent(new MWTCallback() {
-            @Override
-            public void success() {
-                stopRefreshAnimation();
-            }
-
-            @Override
-            public void failure(MWTError error) {
-                Toast.makeText(getActivity(), error.getMessageWithPrompt("无法加载更多"), Toast.LENGTH_SHORT).show();
-                stopRefreshAnimation();
-            }
-        });
-    }
 
     private void refreshCurrentContent(final MWTCallback callback) {
         final MWTUser user = MWTUserManager.getInstance().getCurrentUser();
@@ -559,7 +566,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                 user.refreshUploadedAssets(new MWTCallback() {
                     @Override
                     public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getUploadedAssets());
                         if (callback != null) {
                             callback.success();
                         }
@@ -577,7 +583,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                 user.refreshUploadedAssets(new MWTCallback() {
                     @Override
                     public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getCollectedAssets());
                         if (callback != null) {
                             callback.success();
                         }
@@ -595,7 +600,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                 user.refreshLikedAssets(new MWTCallback() {
                     @Override
                     public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getLikedAssets());
                         if (callback != null) {
                             callback.success();
                         }
@@ -613,7 +617,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                 user.refreshDownloadedAssets(new MWTCallback() {
                     @Override
                     public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getDownloadedAssets());
                         if (callback != null) {
                             callback.success();
                         }
@@ -631,102 +634,6 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
                 user.refreshSharedAssets(new MWTCallback() {
                     @Override
                     public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getSharedAssets());
-                        if (callback != null) {
-                            callback.success();
-                        }
-                    }
-
-                    @Override
-                    public void failure(MWTError error) {
-                        if (callback != null) {
-                            callback.failure(error);
-                        }
-                    }
-                });
-                break;
-            default:
-                if (callback != null) {
-                    callback.success();
-                }
-                break;
-        }
-    }
-
-    private void loadMoreForCurrentContent(final MWTCallback callback) {
-        final MWTUser user = MWTUserManager.getInstance().getCurrentUser();
-        if (user == null) {
-            if (callback != null) {
-                callback.success();
-            }
-            return;
-        }
-
-        switch (_contentMode) {
-            case nContentModeNone:
-                if (callback != null) {
-                    callback.success();
-                }
-                break;
-            case nContentModeCollectedAssets:   // 原为收藏，现改为个人上传的照片
-                user.loadMoreDownloadedAssets(new MWTCallback() {
-                    @Override
-                    public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getUploadedAssets());
-                        if (callback != null) {
-                            callback.success();
-                        }
-                    }
-
-                    @Override
-                    public void failure(MWTError error) {
-                        if (callback != null) {
-                            callback.failure(error);
-                        }
-                    }
-                });
-                break;
-            case nContentModeLikedAssets:
-                user.loadMoreDownloadedAssets(new MWTCallback() {
-                    @Override
-                    public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getLikedAssets());
-                        if (callback != null) {
-                            callback.success();
-                        }
-                    }
-
-                    @Override
-                    public void failure(MWTError error) {
-                        if (callback != null) {
-                            callback.failure(error);
-                        }
-                    }
-                });
-                break;
-            case nContentModeDownloadedAssets:
-                user.loadMoreDownloadedAssets(new MWTCallback() {
-                    @Override
-                    public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getDownloadedAssets());
-                        if (callback != null) {
-                            callback.success();
-                        }
-                    }
-
-                    @Override
-                    public void failure(MWTError error) {
-                        if (callback != null) {
-                            callback.failure(error);
-                        }
-                    }
-                });
-                break;
-            case nContentModeSharedAssets:
-                user.loadMoreSharedAssets(new MWTCallback() {
-                    @Override
-                    public void success() {
-                        _gridViewAdapter.setAssets(user.getAssetsInfo().getSharedAssets());
                         if (callback != null) {
                             callback.success();
                         }
@@ -749,15 +656,9 @@ public class MWTUserMeFragment extends MWTPageFragment implements AdapterView.On
     }
 
     private void startRefreshAnimation() {
-        if (_pullToRefreshStaggeredGridView != null) {
-            _pullToRefreshStaggeredGridView.setRefreshing(true);
-        }
     }
 
     private void stopRefreshAnimation() {
-        if (_pullToRefreshStaggeredGridView != null) {
-            _pullToRefreshStaggeredGridView.onRefreshComplete();
-        }
     }
 
     @Override
