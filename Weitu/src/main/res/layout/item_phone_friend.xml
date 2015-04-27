@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/contact_number"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact_name"
+        android:layout_marginLeft="10dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray" />
+
+    <Button
+        android:id="@+id/invite"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="+邀请"
+        android:background="@drawable/ic_btn"
+        android:layout_margin="10dp"
+        android:textColor="@color/common_white"
+        android:textSize="14sp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout>
